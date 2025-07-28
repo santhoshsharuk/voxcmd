@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Experience VoxCMD in action with our interactive 3D demo">
+    <title>Demo | VoxCMD</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lottie-web@5.7.13/build/player/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.3/particles.min.js"></script>
+    <style>
+        /* Base Styles from index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFFFFF;
+        }
+
+        .menu-btn { 
+            display: none; 
+            background: none; 
+            border: none; 
+            color: #e2e8f0; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            z-index: 101; 
+        }
+
+        /* Page Header */
+        .page-header {
+            height: 1000px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1200px;
+            height: 1200px;
+            background: radial-gradient(circle, rgba(76, 74, 255, 0.35) 0%, rgba(76, 74, 255, 0) 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: #FFFFFF;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            max-width: 700px;
+            color: #bdc3e0;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 3D Animation Canvas */
+        .header-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Particle Effects */
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Demo Section */
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5% 6rem;
+            position: relative;
+        }
+
+        /* Floating Elements */
+        .floating-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(76, 74, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            right: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 40%;
+            left: 5%;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 15%;
+            right: 15%;
+            animation: float 7s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        .demo-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-tab {
+            padding: 0.75rem 1.5rem;
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #bdc3e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-tab::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(76, 74, 255, 0), rgba(76, 74, 255, 0.2));
+            transition: all 0.4s;
+        }
+
+        .demo-tab:hover::before, .demo-tab.active::before {
+            top: 0;
+        }
+
+        .demo-tab:hover, .demo-tab.active {
+            border-color: rgba(76, 74, 255, 0.5);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.2);
+        }
+
+        .demo-tab.active {
+            background-color: rgba(76, 74, 255, 0.2);
+        }
+
+        .demo-content {
+            display: none;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .demo-content.active {
+            display: block;
+        }
+
+        /* 3D Demo Screen */
+        .demo-screen-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto 3rem;
+            perspective: 1000px;
+            height: 65vh;
+            min-height: 600px;
+        }
+
+        .demo-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-screen-rotating {
+            animation: screenRotate 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes screenRotate {
+            0% { transform: rotateY(0deg) rotateX(2deg); }
+            50% { transform: rotateY(-5deg) rotateX(-2deg); }
+            100% { transform: rotateY(5deg) rotateX(2deg); }
+        }
+
+        .screen-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(76, 74, 255, 0.1) 0%, transparent 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .screen-glare {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            opacity: 0.3;
+            pointer-events: none;
+            transform: rotate(-45deg);
+            z-index: 6;
+        }
+
+        /* 3D Workspace Elements */
+        .workspace-3d {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .workspace-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZGV2ZWxvcGVyJTIwd29ya3NwYWNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7) contrast(1.2) saturate(1.2);
+            transform: scale(1.05);
+            transition: all 0.5s ease;
+        }
+
+        /* 3D Holographic Interface */
+        .holo-interface {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            perspective: 1000px;
+            z-index: 10;
+        }
+
+        .holo-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .holo-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(76, 74, 255, 0.1);
+            border: 2px solid rgba(76, 74, 255, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(76, 74, 255, 0.3);
+            overflow: hidden;
+            transform: translateZ(0px);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .holo-screen.active {
+            opacity: 1;
+            transform: translateZ(20px);
+        }
+
+        /* 3D App Windows */
+        .app-window {
+            position: absolute;
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transform: translateZ(40px) scale(0);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .app-window.active {
+            opacity: 1;
+            transform: translateZ(40px) scale(1);
+        }
+
+        .app-window-header {
+            height: 30px;
+            background-color: rgba(50, 50, 50, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .window-close { background-color: #ff5f57; }
+        .window-minimize { background-color: #febc2e; }
+        .window-maximize { background-color: #28c840; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .app-window-content {
+            padding: 15px;
+            height: calc(100% - 30px);
+            overflow: auto;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            width: 500px;
+            height: 300px;
+            top: 20%;
+            left: 30%;
+            z-index: 20;
+        }
+
+        .terminal-content {
+            background-color: #1a1a1a;
+            color: #e2e8f0;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            padding: 10px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .terminal-line {
+            display: flex;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .terminal-line.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prompt {
+            color: #50fa7b;
+            margin-right: 10px;
+        }
+
+        .terminal-text {
+            color: #f8f8f2;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* IDE Window */
+        .ide-window {
+            width: 600px;
+            height: 400px;
+            top: 30%;
+            left: 20%;
+            z-index: 15;
+        }
+
+        .ide-content {
+            background-color: #1a1a1a;
+            height: 100%;
+            display: flex;
+        }
+
+        .ide-sidebar {
+            width: 50px;
+            height: 100%;
+            background-color: #252525;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 15px;
+            gap: 15px;
+        }
+
+        .ide-icon {
+            width: 24px;
+            height: 24px;
+            color: #bdc3e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .code-editor {
+            flex: 1;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .editor-line {
+            display: flex;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .editor-line.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .line-number {
+            color: #64748b;
+            margin-right: 15px;
+            user-select: none;
+            min-width: 25px;
+            text-align: right;
+        }
+
+        .code-text {
+            white-space: pre;
+        }
+
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .variable { color: #bd93f9; }
+        .type { color: #8be9fd; }
+
+        /* Browser Window */
+        .browser-window {
+            width: 550px;
+            height: 350px;
+            top: 10%;
+            right: 15%;
+            z-index: 18;
+        }
+
+        .browser-content {
+            background-color: #ffffff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .browser-toolbar {
+            height: 40px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 10px;
+        }
+
+        .browser-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #dddddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666666;
+            font-size: 0.8rem;
+        }
+
+        .browser-address {
+            flex: 1;
+            background-color: #ffffff;
+            border-radius: 15px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: #333333;
+            font-size: 0.8rem;
+        }
+
+        .browser-page {
+            flex: 1;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .react-app {
+            padding: 20px;
+            color: #333333;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .react-app.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .react-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .react-header h1 {
+            color: #282c34;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .react-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            animation: reactSpin 20s linear infinite;
+        }
+
+        @keyframes reactSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .react-item {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .react-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .item-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #4c4aff;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 500;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #666666;
+        }
+
+        /* 3D Voice Command */
+        .voice-command-3d {
+            position: absolute;
+            top: 20%;
+            right: 5%;
+            transform: translateZ(50px) scale(0);
+            background-color: rgba(76, 74, 255, 0.9);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(76, 74, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 25;
+        }
+
+        .voice-command-3d.active {
+            opacity: 1;
+            transform: translateZ(50px) scale(1);
+        }
+
+        .voice-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 100%;
+            background-color: #FFFFFF;
+            border-radius: 1px;
+            animation: waveAnimation 1s infinite;
+        }
+
+        .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes waveAnimation {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        /* 3D Particles */
+        .particles-3d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Holographic HUD Elements */
+        .hud-element {
+            position: absolute;
+            background-color: rgba(76, 74, 255, 0.15);
+            border: 1px solid rgba(76, 74, 255, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.2);
+            transform: translateZ(60px) scale(0);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 30;
+        }
+
+        .hud-element.active {
+            opacity: 1;
+            transform: translateZ(60px) scale(1);
+        }
+
+        .hud-status {
+            top: 10%;
+            left: 10%;
+            width: 200px;
+        }
+
+        .hud-progress {
+            bottom: 15%;
+            right: 10%;
+            width: 220px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: rgba(76, 74, 255, 0.8);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        /* Demo Sequence Controls */
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background-color: rgba(76, 74, 255, 0.8);
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .control-btn:hover::before {
+            top: 100%;
+            left: 100%;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(76, 74, 255, 0.3);
+        }
+
+        .control-btn.reset {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-btn.reset:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animated Steps */
+        .demo-steps {
+            max-width: 800px;
+            margin: 4rem auto 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-steps::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            width: 2px;
+            height: calc(100% - 80px);
+            background: linear-gradient(to bottom, rgba(76, 74, 255, 0.8), rgba(76, 74, 255, 0.1));
+            z-index: -1;
+        }
+
+        .step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.4;
+            transition: all 0.5s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(76, 74, 255, 0.2);
+            border: 1px solid rgba(76, 74, 255, 0.5);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step-number::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgba(76, 74, 255, 0.3);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .step.active .step-number {
+            background-color: rgba(76, 74, 255, 0.8);
+            box-shadow: 0 0 20px rgba(76, 74, 255, 0.5);
+        }
+
+        .step.active .step-number::before {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0.4;
+            animation: pulseStep 2s infinite;
+        }
+
+        @keyframes pulseStep {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+
+        .step-content {
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            flex: 1;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-content {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-color: rgba(76, 74, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-content h3 {
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-content p {
+            color: #bdc3e0;
+            font-size: 0.95rem;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: rgba(76, 74, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 0.8rem;
+        }
+
+        /* Interactive Demo Section */
+        .interactive-demo {
+            margin-top: 6rem;
+            padding: 3rem;
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .interactive-demo h2 {
+            text-align: center;
+            color: #FFFFFF;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .command-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .command-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .command-input:focus {
+            outline: none;
+            border-color: rgba(76, 74, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(76, 74, 255, 0.2);
+        }
+
+        .command-btn {
+            padding: 1rem 1.5rem;
+            background-color: rgba(76, 74, 255, 0.8);
+            border: none;
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .command-btn:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.3);
+        }
+
+        .command-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .command-chip {
+            padding: 0.5rem 1rem;
+            background-color: rgba(76, 74, 255, 0.2);
+            border: 1px solid rgba(76, 74, 255, 0.3);
+            border-radius: 30px;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .command-chip:hover {
+            background-color: rgba(76, 74, 255, 0.3);
+            border-color: rgba(76, 74, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.2);
+        }
+
+        .response-area {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 200px;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Lottie Animation Container */
+        .lottie-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(5, 5, 5, 0.95); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; backdrop-filter: blur(10px); }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            
+            .demo-screen-container { height: 50vh; min-height: 400px; }
+            
+            .step { flex-direction: column; gap: 1rem; }
+            .demo-steps::before { display: none; }
+            .step-number { margin: 0 auto; }
+            .step-content { text-align: center; }
+            
+            .interactive-demo { padding: 1.5rem; }
+            .command-box { flex-direction: column; }
+        }
+
+        /* Footer */
+        .footer { padding: 6rem 5%; background-color: #0c0c0c; border-top: 1px solid rgba(255, 255, 255, 0.1); position: relative; z-index: 3; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3rem; }
+        .footer-brand p { color: #94a3b8; }
+        .footer-links-group h4 { color: #FFFFFF; font-weight: 500; }
+        .footer-links-group a { color: #94a3b8; text-decoration: none; transition: color 0.3s; }
+        .footer-links-group a:hover { color: #FFFFFF; }
+        .footer-bottom { color: #64748b; text-align: center; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+        .footer-bottom a { color: #adaaff; text-decoration: none; }
+        .social-links { margin-top: 1rem; display: flex; gap: 0.75rem;}
+        .social-link { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; }
+        .social-link:hover { background-color: #FFFFFF; color: #050505; }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-canvas"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            
+            <a href="video.html">Video</a>
+            <a href="howitworks.html">How It Works</a>
+            <a href="documentation.html">Documentation</a>
+            <a href="contact.html">Contact</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+        
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-animation" id="header-animation"></div>
+        <h1>Experience VoxCMD in Action</h1>
+        <p>Watch our advanced 3D demos to see how VoxCMD transforms your workflow with voice-powered automation.</p>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo-container">
+        <!-- Floating Icons -->
+        <div class="floating-icon"><i class="fas fa-microphone-alt"></i></div>
+        <div class="floating-icon"><i class="fas fa-code"></i></div>
+        <div class="floating-icon"><i class="fas fa-magic"></i></div>
+
+        <!-- Demo Tabs -->
+        <div class="demo-tabs">
+            <div class="demo-tab active" data-tab="development">
+                <i class="fas fa-code"></i> Development Workflow
+            </div>
+            <div class="demo-tab" data-tab="productivity">
+                <i class="fas fa-tasks"></i> Productivity Suite
+            </div>
+            <div class="demo-tab" data-tab="system">
+                <i class="fas fa-laptop-code"></i> System Control
+            </div>
+            <div class="demo-tab" data-tab="content">
+                <i class="fas fa-pen-fancy"></i> Content Creation
+            </div>
+        </div>
+
+        <!-- Development Workflow Demo -->
+        <div class="demo-content active" id="development">
+            <div class="demo-screen-container">
+                <div class="demo-screen demo-screen-rotating">
+                    <div class="screen-content">
+                        <div class="workspace-3d">
+                            <div class="workspace-bg"></div>
+                            
+                            <!-- Holographic Interface -->
+                            <div class="holo-interface">
+                                <div class="holo-container">
+                                    <div class="holo-screen"></div>
+                                    
+                                    <!-- Terminal Window -->
+                                    <div class="app-window terminal-window">
+                                        <div class="app-window-header">
+                                            <div class="window-controls">
+                                                <div class="window-btn window-close"></div>
+                                                <div class="window-btn window-minimize"></div>
+                                                <div class="window-btn window-maximize"></div>
+                                            </div>
+                                            <div class="window-title">Terminal</div>
+                                        </div>
+                                        <div class="app-window-content">
+                                            <div class="terminal-content">
+                                                <div class="terminal-line">
+                                                    <span class="prompt">$</span>
+                                                    <span class="terminal-text">cd ~/projects</span>
+                                                </div>
+                                                <div class="terminal-line">
+                                                    <span class="prompt">$</span>
+                                                    <span class="terminal-text" id="terminal-command"></span>
+                                                </div>
+                                                <div id="terminal-output"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- IDE Window -->
+                                    <div class="app-window ide-window">
+                                        <div class="app-window-header">
+                                            <div class="window-controls">
+                                                <div class="window-btn window-close"></div>
+                                                <div class="window-btn window-minimize"></div>
+                                                <div class="window-btn window-maximize"></div>
+                                            </div>
+                                            <div class="window-title">Visual Studio Code - App.jsx</div>
+                                        </div>
+                                        <div class="app-window-content">
+                                            <div class="ide-content">
+                                                <div class="ide-sidebar">
+                                                    <div class="ide-icon"><i class="fas fa-file"></i></div>
+                                                    <div class="ide-icon"><i class="fas fa-search"></i></div>
+                                                    <div class="ide-icon"><i class="fas fa-code-branch"></i></div>
+                                                    <div class="ide-icon"><i class="fas fa-bug"></i></div>
+                                                </div>
+                                                <div class="code-editor" id="code-editor">
+                                                    <!-- Code lines will be added dynamically -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Browser Window -->
+                                    <div class="app-window browser-window">
+                                        <div class="app-window-header">
+                                            <div class="window-controls">
+                                                <div class="window-btn window-close"></div>
+                                                <div class="window-btn window-minimize"></div>
+                                                <div class="window-btn window-maximize"></div>
+                                            </div>
+                                            <div class="window-title">React App</div>
+                                        </div>
+                                        <div class="app-window-content">
+                                            <div class="browser-content">
+                                                <div class="browser-toolbar">
+                                                    <div class="browser-btn"><i class="fas fa-arrow-left"></i></div>
+                                                    <div class="browser-btn"><i class="fas fa-arrow-right"></i></div>
+                                                    <div class="browser-btn"><i class="fas fa-redo"></i></div>
+                                                    <div class="browser-address">http://localhost:3000</div>
+                                                </div>
+                                                <div class="browser-page">
+                                                    <div class="react-app" id="react-app">
+                                                        <div class="react-header">
+                                                            <div class="react-logo">
+                                                                <svg viewBox="-11.5 -10.23174 23 20.46348" xmlns="http://www.w3.org/2000/svg">
+                                                                    <circle cx="0" cy="0" r="2.05" fill="#61dafb"/>
+                                                                    <g stroke="#61dafb" stroke-width="1" fill="none">
+                                                                        <ellipse rx="11" ry="4.2"/>
+                                                                        <ellipse rx="11" ry="4.2" transform="rotate(60)"/>
+                                                                        <ellipse rx="11" ry="4.2" transform="rotate(120)"/>
+                                                                    </g>
+                                                                </svg>
+                                                            </div>
+                                                            <h1>My React App</h1>
+                                                        </div>
+                                                        
+                                                        <div class="react-items" id="react-items">
+                                                            <!-- Items will be added dynamically -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Voice Command -->
+                                    <div class="voice-command-3d">
+                                        <div class="voice-icon">
+                                            <div class="voice-wave">
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                            </div>
+                                        </div>
+                                        <span id="command-text">Hey VoxCMD, create a new React project</span>
+                                    </div>
+                                    
+                                    <!-- HUD Elements -->
+                                    <div class="hud-element hud-status">
+                                        <div>VoxCMD Status: <span style="color: #50fa7b;">Active</span></div>
+                                        <div>Voice Recognition: <span style="color: #50fa7b;">100%</span></div>
+                                        <div>Command Processing: <span style="color: #4c4aff;">Running</span></div>
+                                    </div>
+                                    
+                                    <div class="hud-element hud-progress">
+                                        <div>Project Creation Progress:</div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="progress-fill"></div>
+                                        </div>
+                                        <div style="text-align: right; font-size: 0.8rem; margin-top: 5px;"><span id="progress-percentage">0</span>% Complete</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 3D Particles -->
+                            <div class="particles-3d" id="workspace-particles"></div>
+                        </div>
+                    </div>
+                    <div class="screen-overlay"></div>
+                    <div class="screen-glare"></div>
+                </div>
+            </div>
+            
+            <!-- Animated Steps -->
+            <div class="demo-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3><span class="step-icon"><i class="fas fa-microphone-alt"></i></span> Voice Activation</h3>
+                        <p>Developer activates VoxCMD with a voice command to create a new React project. The system listens and processes the command through advanced speech recognition.</p>
+                    </div>
+                </div>
+                
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3><span class="step-icon"><i class="fas fa-brain"></i></span> Command Processing</h3>
+                        <p>VoxCMD's AI analyzes the intent and determines the necessary steps to create a fully configured React project with optimal settings.</p>
+                    </div>
+                </div>
+                
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3><span class="step-icon"><i class="fas fa-terminal"></i></span> Terminal Execution</h3>
+                        <p>The system automatically executes the required terminal commands to initialize the project, install dependencies, and set up the configuration.</p>
+                    </div>
+                </div>
+                
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3><span class="step-icon"><i class="fas fa-file-code"></i></span> Code Generation</h3>
+                        <p>VoxCMD generates initial boilerplate code, including components, styling, and project structure to get you started immediately.</p>
+                    </div>
+                </div>
+                
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3><span class="step-icon"><i class="fas fa-rocket"></i></span> Project Ready</h3>
+                        <p>In seconds, you have a complete, ready-to-use React project with proper configuration, dependencies, and initial code structure - all through a simple voice command.</p>
+                    </div>
+                </div>
+            </div>
+            
+           
+        
+        <!-- Productivity Suite Demo -->
+        <div class="demo-content" id="productivity">
+            <!-- Content will be similar to development demo but with productivity features -->
+            <div class="demo-screen-container">
+                <div class="demo-screen demo-screen-rotating">
+                    <div class="screen-content" style="background-image: url('https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVza3RvcHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
+                        <div class="voice-command-3d active" style="top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(50px) scale(1); text-align: center; width: 300px;">
+                            <div class="voice-icon">
+                                <div class="voice-wave">
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                </div>
+                            </div>
+                            <span>Coming Soon: Productivity Suite Demo</span>
+                        </div>
+                    </div>
+                    <div class="screen-overlay"></div>
+                    <div class="screen-glare"></div>
+                </div>
+            </div>
+            
+            <div class="demo-steps">
+                <div class="step active">
+                    <div class="step-number"><i class="fas fa-clock"></i></div>
+                    <div class="step-content">
+                        <h3>Coming Soon</h3>
+                        <p>The Productivity Suite 3D demo is under development. Check back soon to see VoxCMD's calendar management, reminder systems, and task automation features in action with stunning 3D visuals.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Control Demo -->
+        <div class="demo-content" id="system">
+            <!-- Content will be similar to development demo but with system control features -->
+            <div class="demo-screen-container">
+                <div class="demo-screen demo-screen-rotating">
+                    <div class="screen-content" style="background-image: url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b3BlcmF0aW5nJTIwc3lzdGVtfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
+                        <div class="voice-command-3d active" style="top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(50px) scale(1); text-align: center; width: 300px;">
+                            <div class="voice-icon">
+                                <div class="voice-wave">
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                </div>
+                            </div>
+                            <span>Coming Soon: System Control Demo</span>
+                        </div>
+                    </div>
+                    <div class="screen-overlay"></div>
+                    <div class="screen-glare"></div>
+                </div>
+            </div>
+            
+            <div class="demo-steps">
+                <div class="step active">
+                    <div class="step-number"><i class="fas fa-clock"></i></div>
+                    <div class="step-content">
+                        <h3>Coming Soon</h3>
+                        <p>The System Control 3D demo is under development. Check back soon to see VoxCMD's application launching, file management, and system monitoring features in action with immersive 3D animations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Creation Demo -->
+        <div class="demo-content" id="content">
+            <!-- Content will be similar to development demo but with content creation features -->
+            <div class="demo-screen-container">
+                <div class="demo-screen demo-screen-rotating">
+                    <div class="screen-content" style="background-image: url('https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNvbnRlbnQlMjBjcmVhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center;">
+                        <div class="voice-command-3d active" style="top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(50px) scale(1); text-align: center; width: 300px;">
+                            <div class="voice-icon">
+                                <div class="voice-wave">
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                </div>
+                            </div>
+                            <span>Coming Soon: Content Creation Demo</span>
+                        </div>
+                    </div>
+                    <div class="screen-overlay"></div>
+                    <div class="screen-glare"></div>
+                </div>
+            </div>
+            
+            <div class="demo-steps">
+                <div class="step active">
+                    <div class="step-number"><i class="fas fa-clock"></i></div>
+                    <div class="step-content">
+                        <h3>Coming Soon</h3>
+                        <p>The Content Creation 3D demo is under development. Check back soon to see VoxCMD's content generation, social media management, and publishing features in action with cutting-edge 3D visualizations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo Section -->
+        <div class="interactive-demo">
+            <h2>Try VoxCMD Yourself</h2>
+            <div class="command-box">
+                <input type="text" class="command-input" id="userCommand" placeholder="Type a command (e.g., 'Create a new React project')">
+                <button class="command-btn" id="sendCommand">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+            
+            <div class="command-examples">
+                <div class="command-chip">Create a new React project</div>
+                <div class="command-chip">Open Visual Studio Code</div>
+                <div class="command-chip">Find all PDF files in Downloads folder</div>
+                <div class="command-chip">Schedule a meeting for tomorrow</div>
+                <div class="command-chip">Check my CPU usage</div>
+            </div>
+            
+            <div class="response-area" id="responseArea">
+> Welcome to the VoxCMD Interactive Demo!
+> Type a command above or click one of the example commands to see how VoxCMD would respond.
+> Note: This is a simulation and doesn't actually execute commands on your system.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">VoxCMD</a>
+                <p>Secure, offline voice automation for powerful system control.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Initialize Particles
+        document.addEventListener('DOMContentLoaded', function() {
+            Particles.init({
+                selector: '#particles-canvas',
+                color: ['#4c4aff', '#ffffff'],
+                connectParticles: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        options: {
+                            maxParticles: 80
+                        }
+                    }
+                ],
+                maxParticles: 120,
+                sizeVariations: 3,
+                speed: 0.5
+            });
+        });
+        
+        // Setup 3D header animation
+        const headerAnimation = document.getElementById('header-animation');
+        let headerScene, headerCamera, headerRenderer, headerGroup;
+        
+        function setupHeaderAnimation() {
+    // Create a scene
+    headerScene = new THREE.Scene();
+    
+    // Create a camera
+    headerCamera = new THREE.PerspectiveCamera(75, headerAnimation.offsetWidth / headerAnimation.offsetHeight, 0.1, 1000);
+    headerCamera.position.z = 5;
+    
+    // Create a renderer
+    headerRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    headerRenderer.setSize(headerAnimation.offsetWidth, headerAnimation.offsetHeight);
+    headerRenderer.setClearColor(0x000000, 0);
+    headerAnimation.appendChild(headerRenderer.domElement);
+    
+    // Create a group for all objects
+    headerGroup = new THREE.Group();
+    headerScene.add(headerGroup);
+    
+    // Create particles
+    const particleGeometry = new THREE.BufferGeometry();
+    const particleCount = 200;
+    
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    
+    const color = new THREE.Color();
+    
+    for (let i = 0; i < particleCount; i++) {
+        // Position
+        positions[i * 3] = (Math.random() - 0.5) * 10; // x
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 10; // y
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 10; // z
+        
+        // Color
+        const colorValue = Math.random();
+        color.setHSL(0.6 + colorValue * 0.1, 0.8, 0.5 + colorValue * 0.2);
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+        
+        // Size
+        sizes[i] = Math.random() * 15 + 5;
+    }
+    
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    
+    // Particle material
+    const particleMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        sizeAttenuation: true
+    });
+    
+    // Create particle system
+    const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+    headerGroup.add(particleSystem);
+    
+    // Create center sphere
+    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const sphereMaterial = new THREE.MeshBasicMaterial({
+        color: 0x4c4aff,
+        transparent: true,
+        opacity: 0.7
+    });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    headerGroup.add(sphere);
+    
+    // Create orbit rings
+    const ringGeometry1 = new THREE.TorusGeometry(1.5, 0.02, 16, 100);
+    const ringMaterial1 = new THREE.MeshBasicMaterial({
+        color: 0x4c4aff,
+        transparent: true,
+        opacity: 0.5
+    });
+    const ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
+    ring1.rotation.x = Math.PI / 2;
+    headerGroup.add(ring1);
+    
+    const ringGeometry2 = new THREE.TorusGeometry(2, 0.02, 16, 100);
+    const ringMaterial2 = new THREE.MeshBasicMaterial({
+        color: 0x4c4aff,
+        transparent: true,
+        opacity: 0.3
+    });
+    const ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
+    ring2.rotation.x = Math.PI / 4;
+    headerGroup.add(ring2);
+    
+    const ringGeometry3 = new THREE.TorusGeometry(2.5, 0.02, 16, 100);
+    const ringMaterial3 = new THREE.MeshBasicMaterial({
+        color: 0x4c4aff,
+        transparent: true,
+        opacity: 0.2
+    });
+    const ring3 = new THREE.Mesh(ringGeometry3, ringMaterial3);
+    ring3.rotation.x = Math.PI / 3;
+    ring3.rotation.y = Math.PI / 6;
+    headerGroup.add(ring3);
+    
+    // Create small orbiting spheres
+    const smallSphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const smallSphereMaterial1 = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.8
+    });
+    const smallSphereMaterial2 = new THREE.MeshBasicMaterial({
+        color: 0x7a7aff,
+        transparent: true,
+        opacity: 0.8
+    });
+    
+    const smallSphere1 = new THREE.Mesh(smallSphereGeometry, smallSphereMaterial1);
+    smallSphere1.position.set(1.5, 0, 0);
+    headerGroup.add(smallSphere1);
+    
+    const smallSphere2 = new THREE.Mesh(smallSphereGeometry, smallSphereMaterial2);
+    smallSphere2.position.set(0, 0, 2);
+    headerGroup.add(smallSphere2);
+    
+    const smallSphere3 = new THREE.Mesh(smallSphereGeometry, smallSphereMaterial1);
+    smallSphere3.position.set(-1.5, 1, 0);
+    headerGroup.add(smallSphere3);
+    
+    const smallSphere4 = new THREE.Mesh(smallSphereGeometry, smallSphereMaterial2);
+    smallSphere4.position.set(0, -1.5, -1);
+    headerGroup.add(smallSphere4);
+    
+    // Add text geometry (voice command)
+    const textLoader = new THREE.FontLoader();
+    
+    // Add voice waves
+    const waveGeometry = new THREE.TorusGeometry(3, 0.02, 16, 100);
+    const waveMaterial = new THREE.MeshBasicMaterial({
+        color: 0x4c4aff,
+        transparent: true,
+        opacity: 0
+    });
+    
+    for (let i = 0; i < 5; i++) {
+        const wave = new THREE.Mesh(waveGeometry, waveMaterial.clone());
+        wave.rotation.x = Math.PI / 2;
+        wave.userData = {
+            initialScale: 0.5 + i * 0.1,
+            opacityFactor: 1 - i * 0.15
+        };
+        wave.scale.set(wave.userData.initialScale, wave.userData.initialScale, wave.userData.initialScale);
+        headerGroup.add(wave);
+    }
+    
+    // Animation
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        if (!headerAnimation.offsetParent) return; // Skip if element is not visible
+        
+        // Rotate the entire group slowly
+        headerGroup.rotation.y += 0.002;
+        headerGroup.rotation.x = Math.sin(Date.now() * 0.0005) * 0.1;
+        
+        // Rotate rings
+        ring1.rotation.z += 0.005;
+        ring2.rotation.z -= 0.003;
+        ring3.rotation.z += 0.002;
+        
+        // Move small spheres in circular paths
+        const time = Date.now() * 0.001;
+        smallSphere1.position.x = Math.cos(time * 0.8) * 1.5;
+        smallSphere1.position.z = Math.sin(time * 0.8) * 1.5;
+        
+        smallSphere2.position.x = Math.cos(time * 0.5) * 2;
+        smallSphere2.position.y = Math.sin(time * 0.5) * 2;
+        
+        smallSphere3.position.z = Math.cos(time * 0.7) * 1.5;
+        smallSphere3.position.y = Math.sin(time * 0.7) * 1.5;
+        
+        smallSphere4.position.x = Math.cos(time * 0.6) * 2;
+        smallSphere4.position.z = Math.sin(time * 0.6) * 2;
+        
+        // Pulse the center sphere
+        const pulseFactor = 1 + Math.sin(time * 2) * 0.05;
+        sphere.scale.set(pulseFactor, pulseFactor, pulseFactor);
+        
+        // Animate voice waves
+        headerGroup.children.forEach(child => {
+            if (child.geometry && child.geometry.type === "TorusGeometry" && child.userData.initialScale) {
+                child.scale.x += 0.01;
+                child.scale.y += 0.01;
+                child.scale.z += 0.01;
+                
+                if (child.scale.x > 2) {
+                    child.scale.set(
+                        child.userData.initialScale, 
+                        child.userData.initialScale, 
+                        child.userData.initialScale
+                    );
+                    child.material.opacity = 0.4 * child.userData.opacityFactor;
+                } else {
+                    child.material.opacity = 0.4 * child.userData.opacityFactor * (1 - (child.scale.x - child.userData.initialScale) / (2 - child.userData.initialScale));
+                }
+            }
+        });
+        
+        // Animate particles
+        const positions = particleSystem.geometry.attributes.position.array;
+        for (let i = 0; i < particleCount; i++) {
+            const ix = i * 3;
+            const iy = i * 3 + 1;
+            const iz = i * 3 + 2;
+            
+            // Slightly move particles
+            positions[ix] += Math.sin(time + i) * 0.01;
+            positions[iy] += Math.cos(time + i * 1.1) * 0.01;
+            positions[iz] += Math.sin(time + i * 0.7) * 0.01;
+            
+            // Keep particles within bounds
+            if (Math.abs(positions[ix]) > 5) positions[ix] *= 0.99;
+            if (Math.abs(positions[iy]) > 5) positions[iy] *= 0.99;
+            if (Math.abs(positions[iz]) > 5) positions[iz] *= 0.99;
+        }
+        particleSystem.geometry.attributes.position.needsUpdate = true;
+        
+        // Render the scene
+        headerRenderer.render(headerScene, headerCamera);
+    }
+    
+    // Handle window resize
+    function onWindowResize() {
+        headerCamera.aspect = headerAnimation.offsetWidth / headerAnimation.offsetHeight;
+        headerCamera.updateProjectionMatrix();
+        headerRenderer.setSize(headerAnimation.offsetWidth, headerAnimation.offsetHeight);
+    }
+    
+    window.addEventListener('resize', onWindowResize);
+    
+    // Start animation
+    animate();
+}
+
+// Initialize 3D header animation
+document.addEventListener('DOMContentLoaded', function() {
+    setupHeaderAnimation();
+    
+    // Demo tab switching
+    const demoTabs = document.querySelectorAll('.demo-tab');
+    const demoContents = document.querySelectorAll('.demo-content');
+    
+    demoTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            
+            // Remove active class from all tabs and contents
+            demoTabs.forEach(t => t.classList.remove('active'));
+            demoContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked tab and matching content
+            tab.classList.add('active');
+            document.getElementById(target).classList.add('active');
+        });
+    });
+    
+    // Code Editor Content
+    const codeEditor = document.querySelector('.code-editor');
+    const codeLines = [
+        { num: 1, text: '<span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;' },
+        { num: 2, text: '<span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;' },
+        { num: 3, text: '' },
+        { num: 4, text: '<span class="comment">// Main App Component</span>' },
+        { num: 5, text: '<span class="keyword">const</span> <span class="function">App</span> = () => {' },
+        { num: 6, text: '  <span class="keyword">const</span> [<span class="variable">data</span>, <span class="function">setData</span>] = useState([]);' },
+        { num: 7, text: '' },
+        { num: 8, text: '  <span class="keyword">useEffect</span>(() => {' },
+        { num: 9, text: '    <span class="comment">// Fetch data when component mounts</span>' },
+        { num: 10, text: '    <span class="function">fetchData</span>();' },
+        { num: 11, text: '  }, []);' },
+        { num: 12, text: '' },
+        { num: 13, text: '  <span class="keyword">const</span> <span class="function">fetchData</span> = <span class="keyword">async</span> () => {' },
+        { num: 14, text: '    <span class="keyword">try</span> {' },
+        { num: 15, text: '      <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> fetch(<span class="string">"/api/data"</span>);' },
+        { num: 16, text: '      <span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> response.json();' },
+        { num: 17, text: '      <span class="function">setData</span>(result);' },
+        { num: 18, text: '    } <span class="keyword">catch</span> (error) {' },
+        { num: 19, text: '      console.error(<span class="string">"Error fetching data:"</span>, error);' },
+        { num: 20, text: '    }' },
+        { num: 21, text: '  };' },
+        { num: 22, text: '' },
+        { num: 23, text: '  <span class="keyword">return</span> (' },
+        { num: 24, text: '    <span class="variable">&lt;div</span> <span class="type">className</span>=<span class="string">"app"</span><span class="variable">&gt;</span>' },
+        { num: 25, text: '      <span class="variable">&lt;h1&gt;</span>My React App<span class="variable">&lt;/h1&gt;</span>' },
+        { num: 26, text: '      {data.map(<span class="variable">item</span> => (' },
+        { num: 27, text: '        <span class="variable">&lt;div</span> <span class="type">key</span>={<span class="variable">item</span>.id} <span class="type">className</span>=<span class="string">"item"</span><span class="variable">&gt;</span>' },
+        { num: 28, text: '          {<span class="variable">item</span>.name}' },
+        { num: 29, text: '        <span class="variable">&lt;/div&gt;</span>' },
+        { num: 30, text: '      ))}' },
+        { num: 31, text: '    <span class="variable">&lt;/div&gt;</span>' },
+        { num: 32, text: '  );' },
+        { num: 33, text: '};' },
+        { num: 34, text: '' },
+        { num: 35, text: '<span class="keyword">export</span> <span class="keyword">default</span> App;' }
+    ];
+    
+    // Populate code editor
+    if (codeEditor) {
+        codeLines.forEach(line => {
+            const lineElement = document.createElement('div');
+            lineElement.className = 'editor-line';
+            lineElement.innerHTML = `<span class="line-number">${line.num}</span><span class="code-text">${line.text}</span>`;
+            codeEditor.appendChild(lineElement);
+        });
+    }
+    
+    // Demo animation sequence
+    const playBtn = document.getElementById('playBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const steps = document.querySelectorAll('.step');
+    const terminal = document.querySelector('.terminal');
+    const voiceCommand = document.querySelector('.voice-command');
+    const terminalCommand = document.getElementById('terminal-command');
+    const terminalOutput = document.getElementById('terminal-output');
+    const commandText = document.getElementById('command-text');
+    const progressFill = document.getElementById('progress-fill');
+    
+    // Terminal command sequences
+    const commands = [
+        { command: "npx create-react-app my-project", delay: 1000 },
+        { command: "cd my-project", delay: 4000 },
+        { command: "npm install tailwindcss postcss autoprefixer", delay: 5000 },
+        { command: "npx tailwindcss init -p", delay: 7000 },
+        { command: "npm start", delay: 9000 }
+    ];
+    
+    // Terminal outputs
+    const outputs = [
+        { text: "Creating a new React app in /home/user/projects/my-project...", delay: 1500 },
+        { text: "Installing packages. This might take a few minutes.", delay: 2500 },
+        { text: "Success! Created my-project at /home/user/projects/my-project", delay: 4500 },
+        { text: "Installing tailwindcss, postcss, and autoprefixer...", delay: 5500 },
+        { text: "Added 38 packages in 2.4s", delay: 6500 },
+        { text: "Created Tailwind CSS config file: tailwind.config.js", delay: 7500 },
+        { text: "Created PostCSS config file: postcss.config.js", delay: 8000 },
+        { text: "Starting development server...", delay: 9500 },
+        { text: "Compiled successfully!", delay: 10500 },
+        { text: "You can now view my-project in the browser at http://localhost:3000", delay: 11000 }
+    ];
+    
+    // Voice commands
+    const voiceCommands = [
+        { text: "Hey VoxCMD, create a new React project", delay: 0 },
+        { text: "I want to use Tailwind CSS too", delay: 4500 },
+        { text: "Start the development server", delay: 8500 },
+        { text: "Project setup complete! Ready for development", delay: 11500 }
+    ];
+    
+    // Animation timeline
+    let timeline;
+    
+    function runDemoSequence() {
+        if (!playBtn || !resetBtn) return; // Skip if elements don't exist
+        
+        resetDemo();
+        
+        // Create a timeline
+        timeline = gsap.timeline();
+        
+        // Update progress bar
+        timeline.to(progressFill, { width: "100%", duration: 12, ease: "linear" });
+        
+        // Setup windows and elements
+        timeline.set(".app-window", { opacity: 0, scale: 0, transformOrigin: "center" });
+        timeline.set(".hud-element", { opacity: 0, scale: 0, transformOrigin: "center" });
+        timeline.set(".voice-command-3d", { opacity: 0, scale: 0, transformOrigin: "center" });
+        timeline.set(".holo-screen", { opacity: 0 });
+        
+        // Activate 3D workspace elements
+        timeline.to(".holo-screen", { opacity: 1, duration: 1 }, 0);
+        timeline.to(".voice-command-3d", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 0.5);
+        timeline.to(".terminal-window", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 1.5);
+        timeline.to(".ide-window", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 3);
+        timeline.to(".browser-window", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 6);
+        timeline.to(".hud-status", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 2);
+        timeline.to(".hud-progress", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, 2.5);
+        
+        // Add terminal output (dynamically with DOM manipulation for better control)
+        if (terminal && voiceCommand) {
+            // Show voice command
+            timeline.to(voiceCommand, { opacity: 1, y: 0, duration: 0.5 }, 0);
+            
+            // Show terminal after 1s
+            timeline.to(terminal, { className: '+=active', duration: 0.5 }, "+=1");
+            
+            // Execute terminal commands
+            commands.forEach((cmd, index) => {
+                timeline.call(() => {
+                    if (terminalCommand) terminalCommand.textContent = cmd.command;
+                }, [], "+=0.5");
+            });
+            
+            // Show terminal outputs
+            outputs.forEach((output, index) => {
+                timeline.call(() => {
+                    if (terminalOutput) {
+                        const outputLine = document.createElement('div');
+                        outputLine.className = 'terminal-line';
+                        outputLine.innerHTML = `<span class="terminal-text">${output.text}</span>`;
+                        terminalOutput.appendChild(outputLine);
+                        
+                        // Auto-scroll terminal
+                        terminal.scrollTop = terminal.scrollHeight;
+                    }
+                }, [], "+=0.5");
+            });
+            
+            // Update voice commands
+            voiceCommands.forEach((cmd, index) => {
+                if (index > 0) {
+                    timeline.call(() => {
+                        if (commandText) commandText.textContent = cmd.text;
+                    }, [], cmd.delay/1000);
+                }
+            });
+            
+            // Activate steps
+            if (steps && steps.length) {
+                steps.forEach((step, index) => {
+                    if (index > 0) {
+                        timeline.to(step, { className: '+=active', duration: 0.3 }, index * 2.5);
+                    }
+                });
+            }
+        }
+        
+        // Progress bar animation
+        if (hudProgressFill && progressPercentage) {
+            timeline.to(hudProgressFill, { width: "100%", duration: 12, ease: "linear" }, 0);
+            
+            // Update percentage text
+            for (let i = 0; i <= 100; i += 5) {
+                timeline.call(() => {
+                    progressPercentage.textContent = i;
+                }, [], i * 0.12);
+            }
+        }
+        
+        // React app items animation
+        timeline.call(() => {
+            const reactItems = document.getElementById('react-items');
+            if (reactItems) {
+                const items = [
+                    { icon: "fas fa-rocket", title: "Quick Start", desc: "Get started with your React journey" },
+                    { icon: "fas fa-book", title: "Documentation", desc: "Learn more about React" },
+                    { icon: "fas fa-code", title: "Code Examples", desc: "Sample components and snippets" },
+                    { icon: "fas fa-cogs", title: "Configuration", desc: "Customize your React setup" }
+                ];
+                
+                items.forEach((item, index) => {
+                    setTimeout(() => {
+                        const itemEl = document.createElement('div');
+                        itemEl.className = 'react-item';
+                        itemEl.innerHTML = `
+                            <div class="item-icon"><i class="${item.icon}"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">${item.title}</div>
+                                <div class="item-desc">${item.desc}</div>
+                            </div>
+                        `;
+                        reactItems.appendChild(itemEl);
+                        
+                        // Animate in
+                        setTimeout(() => {
+                            itemEl.classList.add('active');
+                        }, 100);
+                    }, index * 300 + 9000);
+                });
+            }
+        }, [], 8);
+        
+        // Add editor lines
+        timeline.call(() => {
+            const editor = document.getElementById('code-editor');
+            if (editor) {
+                const lines = [
+                    { num: 1, text: '<span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;' },
+                    { num: 2, text: '<span class="keyword">import</span> <span class="string">"./App.css"</span>;' },
+                    { num: 3, text: '<span class="keyword">import</span> <span class="string">"./tailwind.css"</span>;' },
+                    { num: 4, text: '' },
+                    { num: 5, text: '<span class="function">function</span> App() {' },
+                    { num: 6, text: '  <span class="keyword">return</span> (' },
+                    { num: 7, text: '    <span class="variable">&lt;div</span> <span class="type">className</span>=<span class="string">"min-h-screen bg-gray-100 p-4"</span><span class="variable">&gt;</span>' },
+                    { num: 8, text: '      <span class="variable">&lt;header</span> <span class="type">className</span>=<span class="string">"bg-white shadow rounded-lg p-6 mb-8"</span><span class="variable">&gt;</span>' },
+                    { num: 9, text: '        <span class="variable">&lt;h1</span> <span class="type">className</span>=<span class="string">"text-3xl font-bold text-gray-900"</span><span class="variable">&gt;</span>' },
+                    { num: 10, text: '          My React App' },
+                    { num: 11, text: '        <span class="variable">&lt;/h1&gt;</span>' },
+                    { num: 12, text: '        <span class="variable">&lt;p</span> <span class="type">className</span>=<span class="string">"text-gray-600 mt-2"</span><span class="variable">&gt;</span>' },
+                    { num: 13, text: '          Created with VoxCMD' },
+                    { num: 14, text: '        <span class="variable">&lt;/p&gt;</span>' },
+                    { num: 15, text: '      <span class="variable">&lt;/header&gt;</span>' },
+                    { num: 16, text: '      <span class="variable">&lt;main</span> <span class="type">className</span>=<span class="string">"bg-white shadow rounded-lg p-6"</span><span class="variable">&gt;</span>' },
+                    { num: 17, text: '        <span class="comment">// Content will go here</span>' },
+                    { num: 18, text: '      <span class="variable">&lt;/main&gt;</span>' },
+                    { num: 19, text: '    <span class="variable">&lt;/div&gt;</span>' },
+                    { num: 20, text: '  );' },
+                    { num: 21, text: '}' },
+                    { num: 22, text: '' },
+                    { num: 23, text: '<span class="keyword">export</span> <span class="keyword">default</span> App;' }
+                ];
+                
+                editor.innerHTML = '';
+                
+                lines.forEach((line, index) => {
+                    setTimeout(() => {
+                        const lineEl = document.createElement('div');
+                        lineEl.className = 'editor-line';
+                        lineEl.innerHTML = `<span class="line-number">${line.num}</span><span class="code-text">${line.text}</span>`;
+                        editor.appendChild(lineEl);
+                        
+                        // Animate in
+                        setTimeout(() => {
+                            lineEl.classList.add('active');
+                        }, 50);
+                    }, index * 150 + 4000);
+                });
+            }
+        }, [], 4);
+    }
+    
+    function resetDemo() {
+        // Kill existing timeline if it exists
+        if (timeline) timeline.kill();
+        
+        // Reset terminal and voice command
+        if (terminal) terminal.classList.remove('active');
+        if (voiceCommand) {
+            voiceCommand.style.opacity = 0;
+            voiceCommand.style.transform = 'translateY(20px)';
+        }
+        
+        // Clear terminal output
+        if (terminalCommand) terminalCommand.textContent = '';
+        if (terminalOutput) terminalOutput.innerHTML = '';
+        
+        // Reset voice command text
+        if (commandText) commandText.textContent = "Hey VoxCMD, create a new React project";
+        
+        // Reset steps
+        if (steps && steps.length) {
+            steps.forEach((step, index) => {
+                if (index > 0) {
+                    step.classList.remove('active');
+                }
+            });
+        }
+        
+        // Reset progress
+        if (progressFill) progressFill.style.width = '0%';
+        if (hudProgressFill) hudProgressFill.style.width = '0%';
+        if (progressPercentage) progressPercentage.textContent = '0';
+        
+        // Reset 3D windows
+        const appWindows = document.querySelectorAll('.app-window');
+        const hudElements = document.querySelectorAll('.hud-element');
+        
+        appWindows.forEach(window => {
+            window.style.opacity = 0;
+            window.style.transform = 'translateZ(40px) scale(0)';
+        });
+        
+        hudElements.forEach(element => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateZ(60px) scale(0)';
+        });
+        
+        if (document.querySelector('.voice-command-3d')) {
+            document.querySelector('.voice-command-3d').style.opacity = 0;
+            document.querySelector('.voice-command-3d').style.transform = 'translateZ(50px) scale(0)';
+        }
+        
+        if (document.querySelector('.holo-screen')) {
+            document.querySelector('.holo-screen').style.opacity = 0;
+        }
+    }
+    
+    // Add event listeners for buttons
+    if (playBtn) playBtn.addEventListener('click', runDemoSequence);
+    if (resetBtn) resetBtn.addEventListener('click', resetDemo);
+    
+    // Interactive demo handling
+    const userCommand = document.getElementById('userCommand');
+    const sendCommand = document.getElementById('sendCommand');
+    const responseArea = document.getElementById('responseArea');
+    const commandChips = document.querySelectorAll('.command-chip');
+    
+    // Sample responses for demo commands
+    const commandResponses = {
+        "create a new react project": `> Initializing new React project...
+> Creating directory structure...
+> Installing dependencies: react, react-dom, react-scripts
+> Configuring project settings...
+> Setting up initial components...
+> Success! Created new React project in ./my-react-app
+> To start development server, use: "start development server"`,
+
+        "open visual studio code": `> Launching Visual Studio Code...
+> Opening your most recent project...
+> Restoring previous window state...
+> Visual Studio Code is now ready!`,
+
+        "find all pdf files in downloads folder": `> Searching Downloads folder for PDF files...
+> Found 12 PDF files:
+  - Resume_2025.pdf
+  - TechReport_Q2.pdf
+  - Conference_Tickets.pdf
+  - Product_Manual.pdf
+  - Financial_Statement.pdf
+  - Contract_Agreement.pdf
+  - Invoice_2025001.pdf
+  - Travel_Itinerary.pdf
+  - Project_Proposal.pdf
+  - Meeting_Notes.pdf
+  - Technical_Specs.pdf
+  - User_Guide.pdf`,
+
+        "schedule a meeting for tomorrow": `> Creating new calendar event...
+> What time would you like to schedule the meeting?
+> (For demo purposes, assuming 10:00 AM)
+> Added to calendar: "Meeting" tomorrow at 10:00 AM
+> Would you like to add any participants?
+> (Type: "add participants: [email addresses]")`,
+
+        "check my cpu usage": `> Monitoring system resources...
+> Current CPU usage: 23%
+> Memory usage: 6.2GB / 16GB (38%)
+> Disk usage: 230GB / 512GB (45%)
+> Network: 1.2 Mbps download, 0.4 Mbps upload
+> Top processes by CPU usage:
+  - Chrome: 8.5%
+  - VS Code: 5.2%
+  - Spotify: 3.1%
+  - Terminal: 1.8%`
+    };
+    
+    // Process user command
+    function processCommand(command) {
+        if (!userCommand || !responseArea) return;
+        
+        const normalizedCommand = command.toLowerCase().trim();
+        
+        // Add command to response area
+        responseArea.innerHTML += `\n\n> You: ${command}`;
+        
+        // Add "processing" indicator
+        responseArea.innerHTML += `\n> Processing command...`;
+        
+        // Simulate processing delay
+        setTimeout(() => {
+            // Remove processing indicator
+            responseArea.innerHTML = responseArea.innerHTML.replace("> Processing command...", "");
+            
+            // Add response based on command
+            let responded = false;
+            for (const [key, response] of Object.entries(commandResponses)) {
+                if (normalizedCommand.includes(key)) {
+                    responseArea.innerHTML += `\n${response}`;
+                    responded = true;
+                    break;
+                }
+            }
+            
+            // Generic response if no specific response found
+            if (!responded) {
+                responseArea.innerHTML += `\n> I understand you want to "${command}"
+> This command would trigger the appropriate VoxCMD agent to handle your request.
+> In a full installation, this would execute the requested action.`;
+            }
+            
+            // Scroll to bottom of response area
+            responseArea.scrollTop = responseArea.scrollHeight;
+        }, 1000);
+        
+        // Clear input field
+        userCommand.value = '';
+    }
+    
+    // Event listener for send button
+    if (sendCommand && userCommand) {
+        sendCommand.addEventListener('click', () => {
+            const command = userCommand.value.trim();
+            if (command) {
+                processCommand(command);
+            }
+        });
+        
+        // Event listener for Enter key in input field
+        userCommand.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const command = userCommand.value.trim();
+                if (command) {
+                    processCommand(command);
+                }
+            }
+        });
+    }
+    
+    // Event listeners for command chips
+    if (commandChips && commandChips.length) {
+        commandChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                processCommand(chip.textContent);
+            });
+        });
+    }
+    
+    // Run initial animations
+    gsap.from('.page-header h1', { opacity: 0, y: 30, duration: 1 });
+    gsap.from('.page-header p', { opacity: 0, y: 30, duration: 1, delay: 0.3 });
+    gsap.from('.demo-tab', { 
+        opacity: 0, 
+        y: 20, 
+        duration: 0.5, 
+        stagger: 0.1,
+        delay: 0.5
+    });
+    gsap.from('.demo-screen', { 
+        opacity: 0, 
+        y: 30, 
+        duration: 1, 
+        delay: 0.8
+    });
+    
+    // Create floating elements animation
+    gsap.to('.floating-icon:nth-child(1)', {
+        y: -20,
+        rotation: 5,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
+    
+    gsap.to('.floating-icon:nth-child(2)', {
+        y: -15,
+        rotation: -5,
+        duration: 3.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 0.5
+    });
+    
+    gsap.to('.floating-icon:nth-child(3)', {
+        y: -25,
+        rotation: 8,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 1
+    });
+});
+</script>
+</body>
+</html>

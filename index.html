@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoxCMD - Offline AI Voice Command System</title>
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: #FFFFFF;
+        }
+
+        .nav-cta a {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background-color: #FFFFFF;
+            color: #050505;
+        }
+
+        .nav-cta a:hover {
+            background-color: #DDDDDD;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile menu button */
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 101;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Enhanced Hero Gradient Background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1200px;
+            height: 1200px;
+            background: radial-gradient(
+                circle,
+                rgba(76, 74, 255, 0.4) 0%,
+                rgba(126, 87, 255, 0.3) 25%,
+                rgba(90, 140, 255, 0.2) 50%,
+                rgba(76, 74, 255, 0) 70%
+            );
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+            animation: pulseGradient 15s infinite alternate ease-in-out;
+        }
+
+        /* Additional gradient layers for more dynamic effect */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 60%;
+            left: 40%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(
+                circle,
+                rgba(123, 97, 255, 0.2) 0%,
+                rgba(76, 142, 255, 0.15) 40%,
+                rgba(90, 74, 255, 0) 70%
+            );
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            z-index: -2;
+            animation: floatGradient 20s infinite alternate-reverse ease-in-out;
+        }
+
+        /* Floating particle effect */
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -3;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(76, 74, 255, 0.6);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 15s infinite linear;
+        }
+
+        @keyframes pulseGradient {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes floatGradient {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            50% {
+                transform: translate(-40%, -60%) rotate(5deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(var(--move-x), var(--move-y)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-tagline {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            background: rgba(76, 74, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.1);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero-tagline i {
+            color: #adaaff;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            max-width: 900px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            background: linear-gradient(90deg, #ffffff, #adaaff, #ffffff);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradientText 8s linear infinite, fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        .hero h1 strong {
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(90deg, #adaaff, #ffffff, #7e57ff);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            max-width: 650px;
+            color: #bdc3e0;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .btn {
+            padding: 0.85rem 1.85rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            z-index: 1;
+        }
+
+        .btn:hover::before {
+            top: 100%;
+            left: 100%;
+        }
+
+        .btn-primary {
+            background-color: #FFFFFF;
+            color: #050505;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: rgba(30, 30, 30, 0.5);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(76, 74, 255, 0.5);
+            color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 74, 255, 0.2);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* General Section Styling */
+        .features, .demo, .how-it-works, .docs, .footer {
+            padding: 6rem 5%;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+
+        .section-title .subtitle {
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border-color: rgba(76, 74, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(76, 74, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            background-color: rgba(76, 74, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.2);
+        }
+
+        .feature-icon i {
+            font-size: 1.75rem;
+            color: #adaaff;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+
+        .feature-card p {
+            color: #94a3b8;
+        }
+        
+        /* Demo Section */
+        .demo {
+           background-color: rgba(10,10,10,0.3);
+        }
+
+        .demo-video {
+            margin-top: 2rem;
+            max-width: 900px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .demo-video:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(76, 74, 255, 0.2);
+            border-color: rgba(76, 74, 255, 0.2);
+        }
+
+        .demo-video img {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+        
+        /* How It Works Section */
+        .workflow {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: rgba(76, 74, 255, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .workflow-step:hover::after {
+            opacity: 1;
+        }
+
+        .workflow-step:last-child::after {
+            display: none;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(76, 74, 255, 0.1);
+            border: 1px solid rgba(76, 74, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .workflow-step:hover .step-icon {
+            background-color: rgba(76, 74, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.2);
+        }
+
+        .step-icon i {
+            font-size: 2rem;
+            color: #adaaff;
+        }
+
+        /* Documentation Section */
+        .docs {
+            background-color: rgba(10,10,10,0.3);
+        }
+
+        .docs-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .step-number {
+            background-color: #4c4aff;
+            color: #FFFFFF;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .code-block {
+            background-color: #111119;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            position: relative;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .code-block:hover {
+            border-color: rgba(76, 74, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #0c0c0c;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer .logo { 
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+        
+        .footer-brand p { 
+            color: #94a3b8;
+            max-width: 300px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links-group h4 { 
+            color: #FFFFFF;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links-group ul {
+            list-style: none;
+        }
+        
+        .footer-links-group a { 
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-block;
+            padding: 0.3rem 0;
+        }
+        
+        .footer-links-group a:hover { 
+            color: #FFFFFF;
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom { 
+            color: #64748b;
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-bottom a { 
+            color: #adaaff;
+            text-decoration: none;
+        }
+        
+        .social-links { 
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover { 
+            background-color: #FFFFFF;
+            color: #050505;
+            transform: translateY(-3px);
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links {
+                display: none; position: fixed;
+                top: 0; left: 0; width: 100%; height: 100vh;
+                background-color: rgba(5, 5, 5, 0.95);
+                flex-direction: column; justify-content: center;
+                align-items: center; gap: 2rem;
+                backdrop-filter: blur(10px);
+            }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            .nav-cta { display: none; }
+            .hero-btns { 
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            
+            .workflow-step::after {
+                display: none;
+            }
+        }
+
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="features.html">Features</a>
+            <a href="demo.html">Demo</a>
+            <a href="video.html">Video</a>
+            <a href="howitworks.html">How It Works</a>
+            <a href="documentation.html">Documentation</a>
+            <a href="contact.html">Contact</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="nav-cta">
+             <a href="#contact">Contact Us</a>
+        </div>
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Hero Section with Enhanced Gradients -->
+    <section class="hero" id="home">
+        <!-- Animated Particles -->
+        <div class="hero-particles" id="hero-particles"></div>
+        
+        <p class="hero-tagline"><i class="fas fa-shield-alt"></i> Secure. Powerful. Open Source.</p>
+        <h1>VoxCMD: <strong>Offline AI</strong><br/>Voice Command System</h1>
+        <p class="hero-subtitle">Take control of your system with voice commands that work completely offline. Enhanced security, powerful automation, zero data sharing.</p>
+        <div class="hero-btns">
+            <a href="#demo" class="btn btn-primary">
+                <span><i class="fas fa-play-circle"></i> Try Demo</span>
+            </a>
+            <a href="https://github.com/username/voxcmd" target="_blank" class="btn btn-secondary">
+                <span><i class="fab fa-github"></i> GitHub</span>
+            </a>
+            <a href="#docs" class="btn btn-secondary">
+                <span><i class="fas fa-book"></i> Get Started</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Key Features</h2>
+            <p class="subtitle">VoxCMD offers a powerful suite of features that make voice automation accessible, secure, and efficient.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <h3>Offline Voice Recognition</h3>
+                <p>Process all voice commands locally without sending data to the cloud, ensuring complete privacy and security.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Multi-Agent Automation</h3>
+                <p>Create and deploy multiple specialized agents to handle different tasks across your system.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <h3>Pattern-Based Commands</h3>
+                <p>Define complex command patterns that adapt to your workflow and can be easily customized.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>VS Code Plugin</h3>
+                <p>Seamlessly integrate with VS Code to control your coding environment with simple voice commands.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>Easy Setup</h3>
+                <p>Get up and running quickly with simple installation steps and comprehensive documentation.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Open Source Security</h3>
+                <p>Full transparency with open source code, regular audits, and a strong focus on data security.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" id="demo">
+        <div class="section-title">
+            <h2>See VoxCMD in Action</h2>
+            <p class="subtitle">Watch how VoxCMD transforms the way you interact with your computer, making tasks faster and more intuitive.</p>
+        </div>
+        <div class="demo-video">
+            <img src="https://via.placeholder.com/800x450/111119/adaaff?text=VoxCMD+Demo+Video" alt="VoxCMD Demo">
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-title">
+            <h2>How It Works</h2>
+            <p class="subtitle">Understanding the simple yet powerful architecture behind VoxCMD.</p>
+        </div>
+        <div class="workflow">
+            <div class="workflow-step glass-card">
+                <div class="step-icon"><i class="fas fa-microphone"></i></div>
+                <h3>Voice Input</h3>
+                <p>Your voice commands are captured and processed completely offline.</p>
+            </div>
+            <div class="workflow-step glass-card">
+                <div class="step-icon"><i class="fas fa-brain"></i></div>
+                <h3>NLP Processing</h3>
+                <p>Commands are analyzed using natural language processing.</p>
+            </div>
+            <div class="workflow-step glass-card">
+                <div class="step-icon"><i class="fas fa-cogs"></i></div>
+                <h3>Agent Selection</h3>
+                <p>The appropriate agent is selected based on the command context.</p>
+            </div>
+            <div class="workflow-step glass-card">
+                <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                <h3>Task Execution</h3>
+                <p>The selected agent executes the task with system-level privileges.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section class="docs" id="docs">
+        <div class="section-title">
+            <h2>Get Started</h2>
+            <p class="subtitle">Follow these simple steps to set up VoxCMD on your system.</p>
+        </div>
+        <div class="docs-container glass-card">
+             <div class="step">
+                <h3><span class="step-number">1</span> Installation</h3>
+                <p>Install VoxCMD using npm or download directly from GitHub.</p>
+                <div class="code-block">
+                    <code>npm install -g voxcmd</code>
+                </div>
+            </div>
+            <div class="step">
+                <h3><span class="step-number">2</span> Configuration</h3>
+                <p>Set up your custom configuration file to define commands and agents.</p>
+                <div class="code-block">
+                    <code>voxcmd init</code>
+                </div>
+            </div>
+            <div class="step">
+                <h3><span class="step-number">3</span> Start the Service</h3>
+                <p>Launch VoxCMD and start using voice commands.</p>
+                <div class="code-block">
+                    <code>voxcmd start</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <!-- Footer content from your HTML, automatically styled -->
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">VoxCMD</div>
+                <p>Revolutionizing how you interact with your computer through secure, offline voice automation.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                 <div class="footer-links-group">
+                    <h4>Project</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#docs">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">GitHub Repo</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:info@voxcmd.com">info@voxcmd.com</a></li>
+                        <li><a href="#">Submit an Issue</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Create animated particles
+        function createParticles() {
+            const particles = document.getElementById('hero-particles');
+            if (!particles) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Random movement
+                const moveX = (Math.random() - 0.5) * 200;
+                const moveY = (Math.random() - 0.5) * 200;
+                
+                // Random size
+                const size = Math.random() * 4 + 2;
+                
+                // Random delay
+                const delay = Math.random() * 10;
+                
+                particle.style.top = `${posY}%`;
+                particle.style.left = `${posX}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.setProperty('--move-x', `${moveX}px`);
+                particle.style.setProperty('--move-y', `${moveY}px`);
+                particle.style.animationDelay = `${delay}s`;
+                
+                // Random color variations
+                const hue = 240 + Math.random() * 30; // Blue to purple range
+                particle.style.backgroundColor = `hsla(${hue}, 80%, 70%, 0.6)`;
+                
+                particles.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles when the page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+        
+        // Animate elements when scrolled into view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements with animation
+        document.querySelectorAll('.feature-card, .workflow-step, .glass-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

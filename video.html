@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watch VoxCMD's video demonstration of voice automation features">
+    <title>Video Demo | VoxCMD</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFFFFF;
+        }
+
+        .menu-btn { 
+            display: none; 
+            background: none; 
+            border: none; 
+            color: #e2e8f0; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            z-index: 101; 
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem 5%;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(90deg, #4c4aff, #a5a4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(76, 74, 255, 0.3); }
+            100% { text-shadow: 0 0 20px rgba(76, 74, 255, 0.7); }
+        }
+
+        .page-description {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #bdc3e0;
+        }
+
+        /* Video Player Container */
+        .video-container {
+            width: 90%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            background-color: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(76, 74, 255, 0.2);
+        }
+
+        /* Animated Video Simulation */
+        .video-simulation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Scene Elements */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZGV2ZWxvcGVyJTIwd29ya3NwYWNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7) contrast(1.2) saturate(1.2);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .scene.active {
+            opacity: 1;
+        }
+
+        /* Video Overlay */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(76, 74, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Video Controls */
+        .video-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background-color: rgba(76, 74, 255, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background: linear-gradient(90deg, #4c4aff, #a5a4ff);
+            z-index: 2;
+            transition: width 0.5s linear;
+        }
+
+        /* App Windows */
+        .app-window {
+            position: absolute;
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 5;
+        }
+
+        .app-window.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .window-header {
+            height: 30px;
+            background-color: rgba(50, 50, 50, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .window-close { background-color: #ff5f57; }
+        .window-minimize { background-color: #febc2e; }
+        .window-maximize { background-color: #28c840; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .window-content {
+            padding: 15px;
+            height: calc(100% - 30px);
+            overflow: auto;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            width: 500px;
+            height: 300px;
+            top: 20%;
+            left: 10%;
+            z-index: 5;
+        }
+
+        .terminal-content {
+            background-color: #1a1a1a;
+            color: #e2e8f0;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            padding: 10px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .terminal-line {
+            display: flex;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .terminal-line.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .prompt {
+            color: #50fa7b;
+            margin-right: 10px;
+        }
+
+        .terminal-text {
+            color: #f8f8f2;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Browser Window */
+        .browser-window {
+            width: 550px;
+            height: 350px;
+            top: 30%;
+            right: 10%;
+            z-index: 5;
+        }
+
+        .browser-content {
+            background-color: #ffffff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .browser-toolbar {
+            height: 40px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 10px;
+        }
+
+        .browser-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #dddddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666666;
+            font-size: 0.8rem;
+        }
+
+        .browser-address {
+            flex: 1;
+            background-color: #ffffff;
+            border-radius: 15px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: #333333;
+            font-size: 0.8rem;
+        }
+
+        .browser-page {
+            flex: 1;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Voice Command */
+        .voice-command {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background-color: rgba(76, 74, 255, 0.9);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(76, 74, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        .voice-command.active {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .voice-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 100%;
+            background-color: #FFFFFF;
+            border-radius: 1px;
+            animation: waveAnimation 1s infinite;
+        }
+
+        .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes waveAnimation {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        /* Caption Box */
+        .caption-box {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            max-width: 80%;
+            text-align: center;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .caption-box.active {
+            opacity: 1;
+        }
+
+        /* Scenes */
+        .scene-developer {
+            background-image: url('https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZGV2ZWxvcGVyJTIwd29ya3NwYWNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+        }
+
+        .scene-coding {
+            background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29kaW5nfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+        }
+
+        .scene-terminal {
+            background-image: url('https://images.unsplash.com/photo-1607798748738-b15c40d33d57?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRlcm1pbmFsfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+        }
+
+        .scene-browser {
+            background-image: url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tcHV0ZXIlMjBuaWdodHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(76, 74, 255, 0.6);
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+        }
+
+        /* Video Recommendations */
+        .video-recommendations {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .video-card {
+            width: 300px;
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(76, 74, 255, 0.3);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 170px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, transparent 50%);
+        }
+
+        .video-thumbnail-1 {
+            background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29kaW5nfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');
+        }
+
+        .video-thumbnail-2 {
+            background-image: url('https://images.unsplash.com/photo-1607798748738-b15c40d33d57?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRlcm1pbmFsfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');
+        }
+
+        .video-thumbnail-3 {
+            background-image: url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tcHV0ZXIlMjBuaWdodHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60');
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(76, 74, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover .play-icon {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-info {
+            padding: 1rem;
+        }
+
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-description {
+            font-size: 0.9rem;
+            color: #bdc3e0;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(5, 5, 5, 0.95); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; backdrop-filter: blur(10px); }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            
+            .video-container {
+                aspect-ratio: 4/3;
+            }
+            
+            .terminal-window, .browser-window {
+                width: 80%;
+                height: auto;
+                max-height: 250px;
+                top: 20%;
+                left: 10%;
+            }
+            
+            .browser-window {
+                top: 55%;
+            }
+            
+            .video-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            background-color: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer a {
+            color: #adaaff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="features.html">Features</a>
+            <a href="demo.html">Demo</a>
+            <a href="video.html">Video</a>
+            <a href="howitworks.html">How It Works</a>
+            <a href="documentation.html">Documentation</a>
+            <a href="contact.html">Contact</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+        
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="page-title">VoxCMD in Action</h1>
+        <p class="page-description">Watch how VoxCMD revolutionizes developer workflow through voice commands, transforming complex tasks into simple spoken instructions.</p>
+
+        <!-- Video Player Container -->
+        <div class="video-container">
+            <div class="video-simulation">
+                <!-- Scenes -->
+                <div class="scene scene-developer active" id="scene-1"></div>
+                <div class="scene scene-coding" id="scene-2"></div>
+                <div class="scene scene-terminal" id="scene-3"></div>
+                <div class="scene scene-browser" id="scene-4"></div>
+                
+                <!-- App Windows -->
+                <div class="app-window terminal-window" id="terminal-window">
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <div class="window-btn window-close"></div>
+                            <div class="window-btn window-minimize"></div>
+                            <div class="window-btn window-maximize"></div>
+                        </div>
+                        <div class="window-title">Terminal</div>
+                    </div>
+                    <div class="window-content">
+                        <div class="terminal-content" id="terminal-content">
+                            <div class="terminal-line active">
+                                <span class="prompt">$</span>
+                                <span class="terminal-text">cd ~/projects</span>
+                            </div>
+                            <!-- Terminal lines will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="app-window browser-window" id="browser-window">
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <div class="window-btn window-close"></div>
+                            <div class="window-btn window-minimize"></div>
+                            <div class="window-btn window-maximize"></div>
+                        </div>
+                        <div class="window-title">Web Browser</div>
+                    </div>
+                    <div class="window-content">
+                        <div class="browser-content">
+                            <div class="browser-toolbar">
+                                <div class="browser-btn"><i class="fas fa-arrow-left"></i></div>
+                                <div class="browser-btn"><i class="fas fa-arrow-right"></i></div>
+                                <div class="browser-btn"><i class="fas fa-redo"></i></div>
+                                <div class="browser-address" id="browser-address">http://localhost:3000</div>
+                            </div>
+                            <div class="browser-page" id="browser-page">
+                                React App Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Voice Command -->
+                <div class="voice-command" id="voice-command">
+                    <div class="voice-icon">
+                        <div class="voice-wave">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </div>
+                    <span id="command-text">Hey VoxCMD, create a new React project</span>
+                </div>
+                
+                <!-- Caption Box -->
+                <div class="caption-box" id="caption-box">
+                    Developer activates VoxCMD with a voice command
+                </div>
+                
+                <!-- Particles -->
+                <div class="particles" id="particles"></div>
+                
+                <!-- Video Overlay -->
+                <div class="video-overlay"></div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <!-- Video Controls -->
+            <div class="video-controls">
+                <button class="control-btn" id="playBtn"><i class="fas fa-play"></i></button>
+                <button class="control-btn" id="pauseBtn"><i class="fas fa-pause"></i></button>
+                <button class="control-btn" id="restartBtn"><i class="fas fa-redo"></i></button>
+            </div>
+        </div>
+
+        <!-- Video Recommendations -->
+        <div class="video-recommendations">
+            <div class="video-card">
+                <div class="video-thumbnail video-thumbnail-1">
+                    <div class="play-icon"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Development Workflow</h3>
+                    <p class="video-description">See how VoxCMD accelerates coding tasks with voice-controlled project setup and management.</p>
+                </div>
+            </div>
+            
+            <div class="video-card">
+                <div class="video-thumbnail video-thumbnail-2">
+                    <div class="play-icon"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">System Automation</h3>
+                    <p class="video-description">Control your operating system with voice commands for file management and application control.</p>
+                </div>
+            </div>
+            
+            <div class="video-card">
+                <div class="video-thumbnail video-thumbnail-3">
+                    <div class="play-icon"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">Productivity Suite</h3>
+                    <p class="video-description">Manage your calendar, tasks, and communications all through simple voice commands.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuBtn && navLinks) {
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuBtn.innerHTML = navLinks.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+        }
+
+        // Video simulation elements
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const progressBar = document.getElementById('progress-bar');
+        const voiceCommand = document.getElementById('voice-command');
+        const commandText = document.getElementById('command-text');
+        const captionBox = document.getElementById('caption-box');
+        const terminalWindow = document.getElementById('terminal-window');
+        const terminalContent = document.getElementById('terminal-content');
+        const browserWindow = document.getElementById('browser-window');
+        const browserPage = document.getElementById('browser-page');
+        const browserAddress = document.getElementById('browser-address');
+        const particles = document.getElementById('particles');
+        const scenes = document.querySelectorAll('.scene');
+
+        // Animation state
+        let isPlaying = false;
+        let animationTimer = null;
+        let progress = 0;
+        let currentScene = 0;
+
+        // Terminal commands
+        const commands = [
+            { text: "npx create-react-app my-project", delay: 2000 },
+            { text: "Creating a new React app in /home/user/projects/my-project...", prompt: "", delay: 3000 },
+            { text: "Installing packages. This might take a few minutes.", prompt: "", delay: 5000 },
+            { text: "Success! Created my-project at /home/user/projects/my-project", prompt: "", delay: 7000 },
+            { text: "cd my-project", delay: 9000 },
+            { text: "npm start", delay: 12000 },
+            { text: "Starting development server...", prompt: "", delay: 13000 },
+            { text: "Compiled successfully!", prompt: "", delay: 15000 },
+            { text: "You can now view my-project in the browser at http://localhost:3000", prompt: "", delay: 16000 }
+        ];
+
+        // Voice commands
+        const voiceCommands = [
+            { text: "Hey VoxCMD, create a new React project", delay: 1000 },
+            { text: "VoxCMD, start the development server", delay: 11000 },
+            { text: "Open the project in browser", delay: 14000 },
+            { text: "Awesome! Let's start coding", delay: 18000 }
+        ];
+
+        // Captions
+        const captions = [
+            { text: "Developer activates VoxCMD with a voice command", delay: 1500 },
+            { text: "VoxCMD automatically runs the create-react-app command", delay: 3500 },
+            { text: "The system handles all installation processes in the background", delay: 6000 },
+            { text: "VoxCMD creates a complete project structure with all dependencies", delay: 8000 },
+            { text: "The developer requests to start the development server", delay: 11500 },
+            { text: "VoxCMD launches the React development server", delay: 13500 },
+            { text: "The React application is now running and accessible in the browser", delay: 16500 },
+            { text: "Project setup complete - all through voice commands, no typing required", delay: 19000 }
+        ];
+
+        // Scene changes
+        const sceneChanges = [
+            { index: 0, delay: 0 },      // Developer workspace
+            { index: 1, delay: 5000 },   // Coding
+            { index: 2, delay: 10000 },  // Terminal
+            { index: 3, delay: 15000 }   // Browser
+        ];
+
+        // Create particles
+        function createParticles() {
+            if (!particles) return;
+            
+            particles.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                particle.style.top = `${posY}%`;
+                particle.style.left = `${posX}%`;
+                
+                particles.appendChild(particle);
+            }
+        }
+
+        // Animate particles
+        function animateParticle(particle) {
+            // Random movement
+            const moveX = (Math.random() - 0.5) * 100;
+            const moveY = (Math.random() - 0.5) * 100;
+            
+            // Random size
+            const size = Math.random() * 5 + 3;
+            
+            // Random duration
+            const duration = Math.random() * 3 + 2;
+            
+            // Set initial properties
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.opacity = '0';
+            
+            // Animate the particle
+            setTimeout(() => {
+                particle.style.transition = `transform ${duration}s ease-out, opacity ${duration}s ease-in-out`;
+                particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                particle.style.opacity = '0.8';
+                
+                setTimeout(() => {
+                    particle.style.opacity = '0';
+                    
+                    // Reuse the particle
+                    setTimeout(() => {
+                        // Reset position
+                        particle.style.transition = 'none';
+                        particle.style.transform = 'translate(0, 0)';
+                        
+                        // Animate again
+                        animateParticle(particle);
+                    }, duration * 1000);
+                }, duration * 500);
+            }, Math.random() * 1000);
+        }
+
+        // Add terminal line
+        function addTerminalLine(text, prompt = "$") {
+            if (!terminalContent) return;
+            
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            
+            if (prompt) {
+                line.innerHTML = `<span class="prompt">${prompt}</span><span class="terminal-text">${text}</span>`;
+            } else {
+                line.innerHTML = `<span class="terminal-text">${text}</span>`;
+            }
+            
+            terminalContent.appendChild(line);
+            
+            // Animate in
+            setTimeout(() => {
+                line.classList.add('active');
+                
+                // Auto-scroll terminal
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }, 100);
+        }
+
+        // Update browser
+        function updateBrowser(isLoaded = false) {
+            if (!browserPage) return;
+            
+            if (isLoaded) {
+                browserPage.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; color: #4c4aff; margin-bottom: 10px;">My React App</div>
+                        <div style="color: #666; font-size: 1rem;">Created with VoxCMD</div>
+                    </div>
+                `;
+            } else {
+                browserPage.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.2rem; color: #666;">Loading...</div>
+                        <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #4c4aff; border-radius: 50%; margin: 20px auto; animation: spin 2s linear infinite;"></div>
+                    </div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+                `;
+            }
+        }
+
+        // Start animation
+        function startAnimation() {
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            
+            // Reset everything if needed
+            if (progress >= 100) {
+                resetAnimation();
+            }
+            
+            // Create particles
+            createParticles();
+            
+            // Animate particles
+            const allParticles = particles ? particles.querySelectorAll('.particle') : [];
+            allParticles.forEach(particle => {
+                animateParticle(particle);
+            });
+            
+            // Show terminal window
+            setTimeout(() => {
+                if (terminalWindow) terminalWindow.classList.add('active');
+            }, 2000);
+            
+            // Process terminal commands
+            commands.forEach(command => {
+                setTimeout(() => {
+                    if (isPlaying) {
+                        addTerminalLine(command.text, command.prompt);
+                    }
+                }, command.delay);
+            });
+            
+            // Show browser window
+            setTimeout(() => {
+                if (browserWindow) browserWindow.classList.add('active');
+                updateBrowser(false);
+            }, 14000);
+            
+            // Update browser to loaded state
+            setTimeout(() => {
+                if (isPlaying) {
+                    updateBrowser(true);
+                }
+            }, 17000);
+            
+            // Process voice commands
+            voiceCommands.forEach(command => {
+                setTimeout(() => {
+                    if (isPlaying && commandText) {
+                        commandText.textContent = command.text;
+                        
+                        // Show voice command
+                        if (voiceCommand && !voiceCommand.classList.contains('active')) {
+                            voiceCommand.classList.add('active');
+                        }
+                    }
+                }, command.delay);
+            });
+            
+            // Process captions
+            captions.forEach(caption => {
+                setTimeout(() => {
+                    if (isPlaying && captionBox) {
+                        captionBox.textContent = caption.text;
+                        captionBox.classList.add('active');
+                        
+                        // Hide caption after 3 seconds
+                        setTimeout(() => {
+                            if (captionBox) captionBox.classList.remove('active');
+                        }, 3000);
+                    }
+                }, caption.delay);
+            });
+            
+            // Process scene changes
+            sceneChanges.forEach(scene => {
+                setTimeout(() => {
+                    if (isPlaying) {
+                        // Hide all scenes
+                        scenes.forEach(s => s.classList.remove('active'));
+                        
+                        // Show current scene
+                        if (scenes[scene.index]) {
+                            scenes[scene.index].classList.add('active');
+                            currentScene = scene.index;
+                        }
+                    }
+                }, scene.delay);
+            });
+            
+            // Update progress bar
+            animationTimer = setInterval(() => {
+                if (isPlaying) {
+                    progress += 0.5;
+                    if (progressBar) progressBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(animationTimer);
+                        isPlaying = false;
+                    }
+                }
+            }, 100);
+        }
+
+        // Pause animation
+        function pauseAnimation() {
+            isPlaying = false;
+            clearInterval(animationTimer);
+        }
+
+        // Reset animation
+        function resetAnimation() {
+            // Clear animation state
+            isPlaying = false;
+            progress = 0;
+            currentScene = 0;
+            clearInterval(animationTimer);
+            
+            // Reset progress bar
+            if (progressBar) progressBar.style.width = '0%';
+            
+            // Reset terminal content
+            if (terminalContent) {
+                terminalContent.innerHTML = `
+                    <div class="terminal-line active">
+                        <span class="prompt">$</span>
+                        <span class="terminal-text">cd ~/projects</span>
+                    </div>
+                `;
+            }
+            
+            // Hide windows
+            if (terminalWindow) terminalWindow.classList.remove('active');
+            if (browserWindow) browserWindow.classList.remove('active');
+            if (voiceCommand) voiceCommand.classList.remove('active');
+            if (captionBox) captionBox.classList.remove('active');
+            
+            // Reset command text
+            if (commandText) commandText.textContent = "Hey VoxCMD, create a new React project";
+            
+            // Reset browser
+            if (browserPage) browserPage.innerHTML = "React App Loading...";
+            
+            // Reset scenes
+            scenes.forEach((scene, index) => {
+                scene.classList.toggle('active', index === 0);
+            });
+        }
+
+        // Add event listeners
+        if (playBtn) playBtn.addEventListener('click', startAnimation);
+        if (pauseBtn) pauseBtn.addEventListener('click', pauseAnimation);
+        if (restartBtn) restartBtn.addEventListener('click', resetAnimation);
+        
+        // Video card click handlers
+        const videoCards = document.querySelectorAll('.video-card');
+        videoCards.forEach(card => {
+            card.addEventListener('click', () => {
+                resetAnimation();
+                setTimeout(startAnimation, 500);
+            });
+        });
+        
+        // Start animation when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto-start animation after a short delay
+            setTimeout(startAnimation, 1000);
+        });
+    </script>
+</body>
+</html>

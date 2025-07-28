@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive documentation for VoxCMD - the offline multi-agent voice command system">
+    <title>Documentation | VoxCMD</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFFFFF;
+        }
+
+        .menu-btn { 
+            display: none; 
+            background: none; 
+            border: none; 
+            color: #e2e8f0; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            z-index: 101; 
+        }
+
+        /* Page Header */
+        .page-header {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 900px;
+            height: 900px;
+            background: radial-gradient(circle, rgba(76, 74, 255, 0.35) 0%, rgba(76, 74, 255, 0) 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            color: #FFFFFF;
+        }
+
+        .page-header p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            max-width: 700px;
+            color: #bdc3e0;
+        }
+
+        /* Main Documentation Container */
+        .documentation-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5% 6rem;
+            gap: 2rem;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            padding-right: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(76, 74, 255, 0.5) rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(76, 74, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        .nav-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-category-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links-list {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .nav-links-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links-list a {
+            color: #bdc3e0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: inline-block;
+            padding: 0.3rem 0;
+        }
+
+        .nav-links-list a:hover, 
+        .nav-links-list a.active {
+            color: #FFFFFF;
+            transform: translateX(5px);
+        }
+
+        .nav-links-list a.active {
+            color: #adaaff;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 900px;
+        }
+
+        .doc-section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .doc-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .doc-section-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .doc-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #4c4aff, transparent);
+        }
+
+        .subsection {
+            margin-bottom: 2.5rem;
+        }
+
+        .subsection-title {
+            font-size: 1.4rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+
+        .doc-content p {
+            margin-bottom: 1.2rem;
+            color: #bdc3e0;
+        }
+
+        .doc-content ul, 
+        .doc-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: #bdc3e0;
+        }
+
+        .doc-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-content a {
+            color: #adaaff;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .doc-content a:hover {
+            text-decoration: underline;
+        }
+
+        .doc-content .note {
+            background-color: rgba(76, 74, 255, 0.1);
+            border-left: 4px solid rgba(76, 74, 255, 0.5);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .doc-content .warning {
+            background-color: rgba(255, 74, 74, 0.1);
+            border-left: 4px solid rgba(255, 74, 74, 0.5);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .doc-content .tip {
+            background-color: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid rgba(80, 250, 123, 0.5);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .code-title {
+            background-color: rgba(50, 50, 50, 0.6);
+            padding: 0.5rem 1rem;
+            margin: 1.5rem 0 -1.2rem 0;
+            border-radius: 5px 5px 0 0;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #bdc3e0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+        }
+
+        /* Command Examples */
+        .command-example {
+            display: flex;
+            margin: 1rem 0;
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .command-input {
+            background-color: rgba(76, 74, 255, 0.2);
+            padding: 1rem;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #adaaff;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .command-output {
+            flex: 1;
+            padding: 1rem;
+            color: #e2e8f0;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Documentation Card */
+        .doc-card {
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(76, 74, 255, 0.3);
+        }
+
+        .doc-card-title {
+            font-size: 1.2rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .doc-card-content {
+            color: #bdc3e0;
+        }
+
+        /* Table Styles */
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .doc-table thead {
+            background-color: rgba(50, 50, 50, 0.6);
+            border-bottom: 2px solid rgba(76, 74, 255, 0.5);
+        }
+
+        .doc-table th, 
+        .doc-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .doc-table th {
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+
+        .doc-table td {
+            color: #bdc3e0;
+        }
+
+        .doc-table tr:nth-child(even) {
+            background-color: rgba(30, 30, 30, 0.4);
+        }
+
+        /* Step Process */
+        .steps-container {
+            margin: 2rem 0;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(76, 74, 255, 0.2);
+            border: 1px solid rgba(76, 74, 255, 0.5);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-right: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .step-description {
+            color: #bdc3e0;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            display: inline-block;
+            background-color: rgba(76, 74, 255, 0.2);
+            border: 1px solid rgba(76, 74, 255, 0.3);
+            border-radius: 20px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.8rem;
+            color: #adaaff;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Search Box */
+        .search-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            background-color: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(76, 74, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(76, 74, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: #bdc3e0;
+            font-size: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 992px) {
+            .documentation-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+                height: auto;
+                margin-bottom: 2rem;
+                padding-right: 0;
+            }
+            
+            .nav-links-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+                padding-left: 0;
+            }
+            
+            .nav-links-list li {
+                margin-bottom: 0;
+            }
+            
+            .nav-links-list a {
+                padding: 0.3rem 0.8rem;
+                background-color: rgba(30, 30, 30, 0.6);
+                border-radius: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                font-size: 0.85rem;
+            }
+            
+            .nav-links-list a:hover, 
+            .nav-links-list a.active {
+                transform: translateY(-3px);
+                background-color: rgba(76, 74, 255, 0.2);
+                border-color: rgba(76, 74, 255, 0.3);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(5, 5, 5, 0.95); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; backdrop-filter: blur(10px); }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            
+            .page-header {
+                padding-top: 8rem;
+                min-height: 30vh;
+            }
+            
+            .doc-section-title {
+                font-size: 1.8rem;
+            }
+            
+            .subsection-title {
+                font-size: 1.2rem;
+            }
+            
+            .command-example {
+                flex-direction: column;
+            }
+            
+            .command-input {
+                min-width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Footer */
+        .footer { padding: 6rem 5%; background-color: #0c0c0c; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3rem; }
+        .footer-brand p { color: #94a3b8; }
+        .footer-links-group h4 { color: #FFFFFF; font-weight: 500; }
+        .footer-links-group a { color: #94a3b8; text-decoration: none; transition: color 0.3s; }
+        .footer-links-group a:hover { color: #FFFFFF; }
+        .footer-bottom { color: #64748b; text-align: center; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+        .footer-bottom a { color: #adaaff; text-decoration: none; }
+        .social-links { margin-top: 1rem; display: flex; gap: 0.75rem;}
+        .social-link { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; }
+        .social-link:hover { background-color: #FFFFFF; color: #050505; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="demo.html">Demo</a>
+            <a href="video.html">Video</a>
+            <a href="howitworks.html">How It Works</a>
+            
+            <a href="contact.html">Contact</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="nav-cta">
+             <a href="#contact">Contact Us</a>
+        </div>
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Documentation</h1>
+        <p>Everything you need to know about VoxCMD, from installation to advanced customization.</p>
+    </section>
+
+    <!-- Main Documentation Container -->
+    <div class="documentation-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-box" id="docSearch" placeholder="Search documentation...">
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-book"></i> Getting Started</div>
+                <ul class="nav-links-list">
+                    <li><a href="#introduction" class="active">Introduction</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#quick-start">Quick Start Guide</a></li>
+                    <li><a href="#system-requirements">System Requirements</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-microphone"></i> Core Features</div>
+                <ul class="nav-links-list">
+                    <li><a href="#voice-agent">Voice Agent</a></li>
+                    <li><a href="#think-agent">Think Agent</a></li>
+                    <li><a href="#llm-agent">LLM Agent</a></li>
+                    <li><a href="#memory-system">Memory System</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-code"></i> Developer Tools</div>
+                <ul class="nav-links-list">
+                    <li><a href="#project-creator">Project Creator</a></li>
+                    <li><a href="#code-generator">Code Generator</a></li>
+                    <li><a href="#terminal-agent">Terminal Agent</a></li>
+                    <li><a href="#debug-helper">Debug Helper</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-user-clock"></i> Productivity Tools</div>
+                <ul class="nav-links-list">
+                    <li><a href="#reminder-agent">Reminder Agent</a></li>
+                    <li><a href="#calendar-agent">Calendar Agent</a></li>
+                    <li><a href="#focus-mode">Focus Mode</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-cogs"></i> Configuration</div>
+                <ul class="nav-links-list">
+                    <li><a href="#config-file">Configuration File</a></li>
+                    <li><a href="#voice-settings">Voice Recognition Settings</a></li>
+                    <li><a href="#llm-settings">LLM Settings</a></li>
+                    <li><a href="#customization">Customization</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-plug"></i> Integrations</div>
+                <ul class="nav-links-list">
+                    <li><a href="#vscode-plugin">VS Code Plugin</a></li>
+                    <li><a href="#browser-integration">Browser Integration</a></li>
+                    <li><a href="#api-access">API Access</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-category">
+                <div class="nav-category-title"><i class="fas fa-life-ring"></i> Support</div>
+                <ul class="nav-links-list">
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#community">Community</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Introduction Section -->
+            <section id="introduction" class="doc-section">
+                <h2 class="doc-section-title">Introduction <span class="version-badge">v1.0.0</span></h2>
+                <div class="doc-content">
+                    <p>Welcome to VoxCMD, the powerful offline multi-agent voice command system designed to revolutionize the way developers and power users interact with their computers. This documentation will help you get started with VoxCMD and explore its many features.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">What is VoxCMD?</h3>
+                        <p>VoxCMD is a comprehensive voice control system that operates entirely offline, ensuring privacy and security while providing advanced automation capabilities. By leveraging multiple specialized agents, VoxCMD can understand complex commands, execute system operations, assist with development tasks, and enhance productivity.</p>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-shield-alt"></i> Privacy-Focused Design</h4>
+                            <div class="doc-card-content">
+                                <p>Unlike many voice assistants, VoxCMD runs completely on your local machine without sending your voice data to external servers. This ensures your commands, code, and personal information remain private.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Key Features</h3>
+                        <ul>
+                            <li><strong>Offline Operation:</strong> All processing happens locally on your machine.</li>
+                            <li><strong>Multi-Agent Architecture:</strong> Specialized agents handle different aspects of voice command processing.</li>
+                            <li><strong>Developer Tools:</strong> Code generation, project setup, debugging assistance, and more.</li>
+                            <li><strong>Productivity Suite:</strong> Calendar management, reminders, focus modes, and other productivity features.</li>
+                            <li><strong>System Automation:</strong> Launch applications, find files, monitor system resources.</li>
+                            <li><strong>Extensible Design:</strong> Create custom commands and integrate with other tools.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">How VoxCMD Works</h3>
+                        <p>VoxCMD uses a multi-agent approach to process and execute voice commands:</p>
+                        
+                        <ol>
+                            <li><strong>Voice Agent:</strong> Converts speech to text and identifies command patterns.</li>
+                            <li><strong>Think Agent:</strong> Analyzes the command to determine intent and required actions.</li>
+                            <li><strong>LLM Agent:</strong> Leverages local language models to understand complex requests and generate responses.</li>
+                            <li><strong>Memory System:</strong> Maintains context and remembers preferences for personalized interactions.</li>
+                        </ol>
+                        
+                        <div class="note">
+                            <p><strong>Note:</strong> VoxCMD requires initial setup and configuration to work optimally with your system and workflow. Follow the installation and quick start guides to get started.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Installation Section -->
+            <section id="installation" class="doc-section">
+                <h2 class="doc-section-title">Installation</h2>
+                <div class="doc-content">
+                    <p>Follow these steps to install VoxCMD on your system. The installation process varies slightly depending on your operating system.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Prerequisites</h3>
+                        <p>Before installing VoxCMD, ensure your system meets the <a href="#system-requirements">minimum requirements</a> and has the following prerequisites installed:</p>
+                        
+                        <ul>
+                            <li>Python 3.8 or higher</li>
+                            <li>Node.js 14 or higher</li>
+                            <li>Git</li>
+                            <li>C++ build tools (for native dependencies)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Windows Installation</h3>
+                        <div class="steps-container">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Download the Installer</div>
+                                    <div class="step-description">
+                                        <p>Download the latest Windows installer from the <a href="#">official website</a>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Run the Installer</div>
+                                    <div class="step-description">
+                                        <p>Double-click the downloaded .exe file and follow the installation wizard. Allow administrator permissions when prompted.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Install Required Models</div>
+                                    <div class="step-description">
+                                        <p>After installation, VoxCMD will prompt you to download the necessary language and voice recognition models. This may take some time depending on your internet connection.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Configuration</div>
+                                    <div class="step-description">
+                                        <p>Run the initial configuration wizard to set up VoxCMD according to your preferences.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="code-title">Alternative: Using PowerShell</div>
+                        <div class="code-block">
+                            # Install using PowerShell
+                            iwr -useb https://install.voxcmd.dev/win | iex
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">macOS Installation</h3>
+                        <div class="steps-container">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Download the DMG</div>
+                                    <div class="step-description">
+                                        <p>Download the latest macOS DMG file from the <a href="#">official website</a>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Install the Application</div>
+                                    <div class="step-description">
+                                        <p>Open the DMG file and drag VoxCMD to your Applications folder.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Grant Permissions</div>
+                                    <div class="step-description">
+                                        <p>Launch VoxCMD and grant the required permissions for microphone access, accessibility features, and file system access when prompted.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Install Required Models</div>
+                                    <div class="step-description">
+                                        <p>Follow the prompts to download and install the necessary language and voice recognition models.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="code-title">Alternative: Using Homebrew</div>
+                        <div class="code-block">
+                            # Install using Homebrew
+                            brew install --cask voxcmd
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Linux Installation</h3>
+                        <div class="steps-container">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Install Dependencies</div>
+                                    <div class="step-description">
+                                        <p>First, install the required dependencies using your distribution's package manager:</p>
+                                        <div class="code-block">
+                                            # For Debian/Ubuntu
+                                            sudo apt update
+                                            sudo apt install python3 python3-pip nodejs npm git build-essential libportaudio2 libasound2-dev
+
+                                            # For Fedora
+                                            sudo dnf install python3 python3-pip nodejs npm git gcc-c++ portaudio-devel
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Clone the Repository</div>
+                                    <div class="step-description">
+                                        <div class="code-block">
+                                            git clone https://github.com/voxcmd/voxcmd.git
+                                            cd voxcmd
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Run the Installation Script</div>
+                                    <div class="step-description">
+                                        <div class="code-block">
+                                            ./install.sh
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Download Models and Configure</div>
+                                    <div class="step-description">
+                                        <p>Follow the prompts to download models and configure the application.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tip">
+                            <p><strong>Tip:</strong> For better microphone integration on Linux, consider installing PulseAudio or PipeWire if they're not already on your system.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start Guide -->
+            <section id="quick-start" class="doc-section">
+                <h2 class="doc-section-title">Quick Start Guide</h2>
+                <div class="doc-content">
+                    <p>After installing VoxCMD, follow this quick start guide to get up and running with basic voice commands.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Launching VoxCMD</h3>
+                        <p>Start VoxCMD from your applications menu or by running the following command in your terminal:</p>
+                        
+                        <div class="code-block">
+                            # Start VoxCMD
+                            voxcmd start
+                        </div>
+                        
+                        <p>Once launched, VoxCMD will run in the background, indicated by an icon in your system tray or menu bar.</p>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Basic Voice Commands</h3>
+                        <p>VoxCMD uses "Hey VoxCMD" as the default wake word. Here are some basic commands to get started:</p>
+                        
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Command</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>"Hey VoxCMD, what can you do?"</td>
+                                    <td>Lists available commands and capabilities</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, open Chrome"</td>
+                                    <td>Launches Google Chrome browser</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, create a new folder called Projects"</td>
+                                    <td>Creates a new directory named "Projects"</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, what time is it?"</td>
+                                    <td>Announces the current time</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, create a new React project"</td>
+                                    <td>Initializes a new React application</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, remind me to check emails in 1 hour"</td>
+                                    <td>Sets a reminder for 1 hour from now</td>
+                                </tr>
+                                <tr>
+                                    <td>"Hey VoxCMD, start focus mode for 25 minutes"</td>
+                                    <td>Activates focus mode for a Pomodoro session</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Command Structure</h3>
+                        <p>Most VoxCMD commands follow this general structure:</p>
+                        
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-microphone"></i> Wake Word
+                            </div>
+                            <div class="command-output">
+                                "Hey VoxCMD"
+                            </div>
+                        </div>
+                        
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-cog"></i> Action
+                            </div>
+                            <div class="command-output">
+                                "open", "create", "find", "remind", etc.
+                            </div>
+                        </div>
+                        
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-box"></i> Object
+                            </div>
+                            <div class="command-output">
+                                "Chrome", "a new folder", "my calendar", etc.
+                            </div>
+                        </div>
+                        
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-sliders-h"></i> Parameters (Optional)
+                            </div>
+                            <div class="command-output">
+                                "called Projects", "for 30 minutes", "with TypeScript", etc.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">First-Time Setup</h3>
+                        <p>When you first launch VoxCMD, the setup wizard will guide you through the following steps:</p>
+                        
+                        <ol>
+                            <li><strong>Voice Training:</strong> Train VoxCMD to recognize your voice by reading a few sample phrases.</li>
+                            <li><strong>Environment Selection:</strong> Choose which development environments and tools you use most frequently.</li>
+                            <li><strong>Integration Setup:</strong> Configure integrations with your calendar, task management systems, and development tools.</li>
+                            <li><strong>Command Customization:</strong> Personalize your most frequently used commands.</li>
+                        </ol>
+                        
+                        <div class="note">
+                            <p><strong>Note:</strong> You can revisit this setup process at any time by saying "Hey VoxCMD, open settings" or using the system tray/menu bar icon.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Requirements -->
+            <section id="system-requirements" class="doc-section">
+                <h2 class="doc-section-title">System Requirements</h2>
+                <div class="doc-content">
+                    <p>To ensure optimal performance, your system should meet or exceed the following requirements:</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Minimum Requirements</h3>
+                        <ul>
+                            <li><strong>Operating System:</strong>
+                                <ul>
+                                    <li>Windows 10 (64-bit) or later</li>
+                                    <li>macOS 11 (Big Sur) or later</li>
+                                    <li>Ubuntu 20.04, Fedora 34, or other modern Linux distributions</li>
+                                </ul>
+                            </li>
+                            <li><strong>Processor:</strong> Quad-core CPU (Intel i5/AMD Ryzen 5 or equivalent)</li>
+                            <li><strong>Memory:</strong> 8GB RAM</li>
+                            <li><strong>Storage:</strong> 5GB free disk space (plus additional space for language models)</li>
+                            <li><strong>Microphone:</strong> Any built-in or external microphone</li>
+                            <li><strong>Internet:</strong> Required for initial setup and model downloads only</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Recommended Specifications</h3>
+                        <ul>
+                            <li><strong>Processor:</strong> 6+ core CPU (Intel i7/AMD Ryzen 7 or better)</li>
+                            <li><strong>Memory:</strong> 16GB RAM or more</li>
+                            <li><strong>Storage:</strong> 20GB+ free SSD space</li>
+                            <li><strong>Microphone:</strong> High-quality directional microphone</li>
+                            <li><strong>GPU:</strong> CUDA-compatible NVIDIA GPU (4GB+ VRAM) for accelerated LLM processing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Additional Software Dependencies</h3>
+                        <p>The following software is required or recommended for full functionality:</p>
+                        
+                        <ul>
+                            <li><strong>Python:</strong> Version 3.8 or higher</li>
+                            <li><strong>Node.js:</strong> Version 14 or higher</li>
+                            <li><strong>Git:</strong> Latest version</li>
+                            <li><strong>Terminal:</strong> Compatible with bash/zsh on macOS/Linux or PowerShell/Command Prompt on Windows</li>
+                            <li><strong>Development Tools:</strong> Any IDEs or text editors you commonly use (VS Code, IntelliJ, etc.)</li>
+                        </ul>
+                        
+                        <div class="warning">
+                            <p><strong>Warning:</strong> Some features like offline language models may require significantly more system resources. For systems with limited resources, consider using the lightweight configuration which uses smaller models.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Voice Agent Section -->
+            <section id="voice-agent" class="doc-section">
+                <h2 class="doc-section-title">Voice Agent</h2>
+                <div class="doc-content">
+                    <p>The Voice Agent is the primary interface between you and VoxCMD. It handles speech recognition, wake word detection, and command parsing.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">How It Works</h3>
+                        <p>The Voice Agent continuously listens for the wake word ("Hey VoxCMD" by default) and then processes the subsequent command using offline speech recognition models. Here's the process:</p>
+                        
+                        <ol>
+                            <li><strong>Wake Word Detection:</strong> Listens for the wake word using a low-power neural network.</li>
+                            <li><strong>Command Recording:</strong> Once the wake word is detected, records the following speech until a natural pause.</li>
+                            <li><strong>Speech-to-Text:</strong> Converts the recorded audio to text using an offline speech recognition model.</li>
+                            <li><strong>Command Parsing:</strong> Identifies the intent and parameters of the command.</li>
+                            <li><strong>Handoff:</strong> Passes the parsed command to the Think Agent for further processing.</li>
+                        </ol>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-volume-up"></i> Voice Feedback</h4>
+                            <div class="doc-card-content">
+                                <p>The Voice Agent provides audio feedback to confirm command reception and processing status. This includes:</p>
+                                <ul>
+                                    <li>Wake word acknowledgment tone</li>
+                                    <li>Command processing indication</li>
+                                    <li>Error notifications</li>
+                                    <li>Verbal responses when appropriate</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Customizing the Voice Agent</h3>
+                        <p>You can customize various aspects of the Voice Agent through the settings menu or configuration file:</p>
+                        
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Setting</th>
+                                    <th>Description</th>
+                                    <th>Default Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Wake Word</td>
+                                    <td>Change the phrase that activates VoxCMD</td>
+                                    <td>"Hey VoxCMD"</td>
+                                </tr>
+                                <tr>
+                                    <td>Activation Sensitivity</td>
+                                    <td>Adjust how sensitive the wake word detection is</td>
+                                    <td>Medium (0.7)</td>
+                                </tr>
+                                <tr>
+                                    <td>Voice Feedback Level</td>
+                                    <td>Control how much audio feedback is provided</td>
+                                    <td>Normal</td>
+                                </tr>
+                                <tr>
+                                    <td>Voice Gender</td>
+                                    <td>Set the preferred gender for VoxCMD's voice responses</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>Speech Recognition Model</td>
+                                    <td>Select which speech recognition model to use</td>
+                                    <td>Standard (Medium)</td>
+                                </tr>
+                                <tr>
+                                    <td>Background Noise Filtering</td>
+                                    <td>Enable noise filtering for noisy environments</td>
+                                    <td>Enabled</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>To change these settings using voice commands:</p>
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-microphone"></i> Voice Command
+                            </div>
+                            <div class="command-output">
+                                "Hey VoxCMD, change wake word to 'Computer'"
+                            </div>
+                        </div>
+                        
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-microphone"></i> Voice Command
+                            </div>
+                            <div class="command-output">
+                                "Hey VoxCMD, increase voice sensitivity"
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Troubleshooting Voice Recognition</h3>
+                        <p>If you're experiencing issues with voice recognition:</p>
+                        
+                        <ol>
+                            <li><strong>Recalibrate Microphone:</strong> Use "Hey VoxCMD, calibrate microphone" to adjust for your current environment.</li>
+                            <li><strong>Voice Training:</strong> Run "Hey VoxCMD, retrain voice model" to improve recognition accuracy.</li>
+                            <li><strong>Check Environment:</strong> Reduce background noise and ensure your microphone isn't obstructed.</li>
+                            <li><strong>Adjust Sensitivity:</strong> If wake word detection is too sensitive or not sensitive enough, adjust the activation sensitivity.</li>
+                        </ol>
+                        
+                        <div class="tip">
+                            <p><strong>Tip:</strong> For best results, use a dedicated microphone positioned 6-12 inches from your mouth, especially in noisy environments.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration File Section -->
+            <section id="config-file" class="doc-section">
+                <h2 class="doc-section-title">Configuration File</h2>
+                <div class="doc-content">
+                    <p>VoxCMD uses a configuration file to store settings and preferences. This file can be edited directly for advanced customization.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Location</h3>
+                        <p>The configuration file is located at:</p>
+                        
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Operating System</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Windows</td>
+                                    <td><code>%APPDATA%\VoxCMD\config.yaml</code></td>
+                                </tr>
+                                <tr>
+                                    <td>macOS</td>
+                                    <td><code>~/Library/Application Support/VoxCMD/config.yaml</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Linux</td>
+                                    <td><code>~/.config/voxcmd/config.yaml</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>You can open the configuration file using:</p>
+                        <div class="command-example">
+                            <div class="command-input">
+                                <i class="fas fa-microphone"></i> Voice Command
+                            </div>
+                            <div class="command-output">
+                                "Hey VoxCMD, open configuration file"
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">File Format</h3>
+                        <p>The configuration file uses YAML format. Here's a sample configuration with common settings:</p>
+                        
+                        <div class="code-block">
+                            # VoxCMD Configuration File
+                            
+                            # General Settings
+                            general:
+                              language: "en-US"
+                              auto_start: true
+                              update_check: true
+                              telemetry: false
+                            
+                            # Voice Settings
+                            voice:
+                              wake_word: "Hey VoxCMD"
+                              sensitivity: 0.7
+                              feedback_level: "normal"  # options: minimal, normal, verbose
+                              voice_gender: "female"    # options: male, female
+                              recognition_model: "medium"
+                              noise_filtering: true
+                            
+                            # LLM Settings
+                            llm:
+                              model_path: "/path/to/models/llama-7b"
+                              max_tokens: 2048
+                              temperature: 0.7
+                              offload_to_gpu: true
+                            
+                            # Paths and Integrations
+                            paths:
+                              projects_dir: "~/Projects"
+                              downloads_dir: "~/Downloads"
+                              templates_dir: "~/.voxcmd/templates"
+                            
+                            # Integrations
+                            integrations:
+                              vscode:
+                                enabled: true
+                                extensions_path: "~/.vscode/extensions"
+                              browser:
+                                enabled: true
+                                preferred: "chrome"
+                              calendar:
+                                enabled: true
+                                provider: "google"
+                                sync_interval: 15  # minutes
+                            
+                            # Custom Commands
+                            custom_commands:
+                              - name: "start dev server"
+                                action: "terminal"
+                                command: "npm run dev"
+                                working_dir: "~/current-project"
+                              - name: "deploy to production"
+                                action: "script"
+                                script_path: "~/.voxcmd/scripts/deploy.sh"
+                                confirm: true
+                        </div>
+                        
+                        <div class="warning">
+                            <p><strong>Warning:</strong> Make a backup of your configuration file before making significant changes. Incorrect syntax can prevent VoxCMD from starting properly.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Common Configuration Tasks</h3>
+                        
+                        <h4>Changing the Wake Word</h4>
+                        <p>To change the phrase that activates VoxCMD:</p>
+                        <div class="code-block">
+                            voice:
+                              wake_word: "Computer"  # Change to your preferred wake word
+                        </div>
+                        
+                        <h4>Adding Custom Commands</h4>
+                        <p>Custom commands can be added to the <code>custom_commands</code> section:</p>
+                        <div class="code-block">
+                            custom_commands:
+                              - name: "build project"
+                                action: "terminal"
+                                command: "npm run build"
+                                working_dir: "~/Projects/current"
+                        </div>
+                        
+                        <h4>Configuring Project Directories</h4>
+                        <p>Set up your commonly used directories:</p>
+                        <div class="code-block">
+                            paths:
+                              projects_dir: "~/Documents/Projects"  # Your main projects folder
+                              templates_dir: "~/Templates"          # Templates for new projects
+                        </div>
+                        
+                        <div class="tip">
+                            <p><strong>Tip:</strong> After modifying the configuration file, restart VoxCMD for changes to take effect, or use "Hey VoxCMD, reload configuration".</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Troubleshooting Section -->
+            <section id="troubleshooting" class="doc-section">
+                <h2 class="doc-section-title">Troubleshooting</h2>
+                <div class="doc-content">
+                    <p>This section covers common issues and their solutions to help you troubleshoot problems with VoxCMD.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Common Issues</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-microphone-slash"></i> VoxCMD Doesn't Respond to Voice Commands</h4>
+                            <div class="doc-card-content">
+                                <p><strong>Possible causes:</strong></p>
+                                <ul>
+                                    <li>Microphone access permissions not granted</li>
+                                    <li>Incorrect microphone selected</li>
+                                    <li>Background noise interfering with wake word detection</li>
+                                    <li>Voice service not running</li>
+                                </ul>
+                                
+                                <p><strong>Solutions:</strong></p>
+                                <ol>
+                                    <li>Check microphone permissions in system settings</li>
+                                    <li>Open VoxCMD settings and select the correct microphone</li>
+                                    <li>Run the microphone calibration: "Hey VoxCMD, calibrate microphone"</li>
+                                    <li>Restart the voice service: Right-click the system tray icon and select "Restart Voice Service"</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-exclamation-triangle"></i> VoxCMD Crashes on Startup</h4>
+                            <div class="doc-card-content">
+                                <p><strong>Possible causes:</strong></p>
+                                <ul>
+                                    <li>Corrupted configuration file</li>
+                                    <li>Missing or incompatible dependencies</li>
+                                    <li>Insufficient system resources</li>
+                                    <li>Conflicting software</li>
+                                </ul>
+                                
+                                <p><strong>Solutions:</strong></p>
+                                <ol>
+                                    <li>Restore the default configuration: Run <code>voxcmd --reset-config</code> in terminal</li>
+                                    <li>Check logs for specific errors: <code>voxcmd --debug</code></li>
+                                    <li>Reinstall VoxCMD with the latest version</li>
+                                    <li>Check system resources and close resource-intensive applications</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-memory"></i> High CPU/Memory Usage</h4>
+                            <div class="doc-card-content">
+                                <p><strong>Possible causes:</strong></p>
+                                <ul>
+                                    <li>Large language model loaded into memory</li>
+                                    <li>Multiple agents running simultaneously</li>
+                                    <li>Debug mode enabled</li>
+                                </ul>
+                                
+                                <p><strong>Solutions:</strong></p>
+                                <ol>
+                                    <li>Switch to a smaller language model in settings</li>
+                                    <li>Disable unused agents in the configuration file</li>
+                                    <li>Enable model offloading if you have a compatible GPU</li>
+                                    <li>Use "Hey VoxCMD, enable low resource mode" for temporary relief</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Diagnostic Tools</h3>
+                        <p>VoxCMD includes several diagnostic tools to help identify and resolve issues:</p>
+                        
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Tool</th>
+                                    <th>Description</th>
+                                    <th>How to Access</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>System Check</td>
+                                    <td>Verifies all components are working correctly</td>
+                                    <td>"Hey VoxCMD, run system check" or <code>voxcmd --check</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Voice Test</td>
+                                    <td>Tests microphone and speech recognition</td>
+                                    <td>"Hey VoxCMD, test voice recognition" or <code>voxcmd --test-voice</code></td>
+                                </tr>
+                                <tr>
+                                                                        <td>Log Viewer</td>
+                                    <td>Displays detailed logs for troubleshooting</td>
+                                    <td>"Hey VoxCMD, show logs" or <code>voxcmd --logs</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Hardware Monitor</td>
+                                    <td>Shows resource usage and hardware compatibility</td>
+                                    <td>"Hey VoxCMD, show hardware status" or <code>voxcmd --hardware</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Network Diagnostics</td>
+                                    <td>Checks connectivity for integrations</td>
+                                    <td>"Hey VoxCMD, test network" or <code>voxcmd --network</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Checking Logs</h3>
+                        <p>Log files can provide detailed information about errors and issues. VoxCMD logs are stored in:</p>
+                        
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>Operating System</th>
+                                    <th>Log Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Windows</td>
+                                    <td><code>%APPDATA%\VoxCMD\logs\</code></td>
+                                </tr>
+                                <tr>
+                                    <td>macOS</td>
+                                    <td><code>~/Library/Logs/VoxCMD/</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Linux</td>
+                                    <td><code>~/.local/share/voxcmd/logs/</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>To enable more detailed logging for troubleshooting:</p>
+                        <div class="code-block">
+                            # Run VoxCMD with debug logging enabled
+                            voxcmd --debug
+                            
+                            # Or modify the config.yaml file:
+                            logging:
+                              level: "debug"  # options: info, debug, trace
+                              file_rotation: 7  # days to keep logs
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Reporting Issues</h3>
+                        <p>If you encounter issues that you can't resolve, you can report them to the VoxCMD team:</p>
+                        
+                        <ol>
+                            <li><strong>GitHub Issues:</strong> Submit a detailed bug report on our <a href="#">GitHub repository</a></li>
+                            <li><strong>Community Forum:</strong> Ask for help on the <a href="#">VoxCMD Community Forum</a></li>
+                            <li><strong>Export Diagnostics:</strong> Run <code>voxcmd --export-diagnostics</code> to generate a diagnostic report to include with your issue</li>
+                        </ol>
+                        
+                        <div class="tip">
+                            <p><strong>Tip:</strong> When reporting issues, always include your operating system, VoxCMD version, and the steps to reproduce the problem. Screenshots or screen recordings can be very helpful.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section id="faq" class="doc-section">
+                <h2 class="doc-section-title">Frequently Asked Questions</h2>
+                <div class="doc-content">
+                    <div class="subsection">
+                        <h3 class="subsection-title">General Questions</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Is VoxCMD completely offline?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes, once installed and configured, VoxCMD operates entirely offline. All voice processing, language understanding, and command execution happen locally on your machine. Internet connectivity is only required for initial setup, model downloads, and optional cloud integrations.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Can I use VoxCMD with other programming languages?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes! VoxCMD supports a wide range of programming languages and development environments. The core features work with any language, and there are specialized commands for popular languages like JavaScript, Python, Java, C#, Go, and more. You can also extend VoxCMD with custom commands for your specific development stack.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> How much system resources does VoxCMD use?</h4>
+                            <div class="doc-card-content">
+                                <p>Resource usage depends on your configuration and which features you're using. With default settings, VoxCMD uses approximately:</p>
+                                <ul>
+                                    <li>200-300MB RAM for the base application</li>
+                                    <li>Additional 1-4GB for language models (depending on model size)</li>
+                                    <li>5-15% CPU when processing voice commands</li>
+                                    <li>Minimal CPU usage when idle (wake word detection mode)</li>
+                                </ul>
+                                <p>You can adjust resource usage in settings by choosing smaller models or enabling resource-saving options.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Voice Recognition</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Does VoxCMD work with accents?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes, VoxCMD's voice recognition system is designed to work with a variety of accents. For best results, complete the voice training process during setup, which helps the system adapt to your specific accent and speech patterns. If you experience issues, you can run additional voice training with the command "Hey VoxCMD, improve voice recognition" to further enhance accuracy.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Can I change the wake word?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes, you can customize the wake word in settings. The default is "Hey VoxCMD," but you can change it to any phrase between 2-5 words long. Common alternatives include "Computer," "Assistant," or "Hey Dev." To change it, use the command "Hey VoxCMD, change wake word to [your preferred phrase]" or modify the configuration file directly.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> How does VoxCMD handle noisy environments?</h4>
+                            <div class="doc-card-content">
+                                <p>VoxCMD includes noise filtering technology to improve voice recognition in moderately noisy environments. For optimal performance in very noisy settings:</p>
+                                <ul>
+                                    <li>Use a directional microphone positioned close to your mouth</li>
+                                    <li>Enable enhanced noise filtering in settings</li>
+                                    <li>Increase the wake word sensitivity</li>
+                                    <li>Consider using the push-to-talk mode (keyboard shortcut) in extremely noisy environments</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Development Features</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Can VoxCMD integrate with my IDE?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes, VoxCMD offers direct integration with popular IDEs and code editors including:</p>
+                                <ul>
+                                    <li>Visual Studio Code (via the official VoxCMD extension)</li>
+                                    <li>JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)</li>
+                                    <li>Visual Studio</li>
+                                    <li>Sublime Text</li>
+                                    <li>Atom</li>
+                                </ul>
+                                <p>These integrations allow for more powerful code navigation, generation, and editing capabilities directly within your development environment.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> How does code generation work?</h4>
+                            <div class="doc-card-content">
+                                <p>VoxCMD's code generation is powered by offline language models that understand programming concepts and syntax. When you request code generation, the LLM Agent processes your request, considers the context (current file, project structure, etc.), and generates appropriate code. The generator supports various programming languages and frameworks, and can create everything from simple functions to complete components or modules.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Can VoxCMD help with debugging?</h4>
+                            <div class="doc-card-content">
+                                <p>Yes, VoxCMD includes a Debug Helper that can assist with troubleshooting code issues. It can:</p>
+                                <ul>
+                                    <li>Analyze error messages and suggest solutions</li>
+                                    <li>Explain what specific code does</li>
+                                    <li>Identify potential bugs or performance issues</li>
+                                    <li>Generate test cases for specific functions</li>
+                                    <li>Explain complex code sections in simple terms</li>
+                                </ul>
+                                <p>Use commands like "Hey VoxCMD, explain this error" or "Hey VoxCMD, help debug this function" while your cursor is on the relevant code.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Privacy and Security</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Does VoxCMD send my voice data to the cloud?</h4>
+                            <div class="doc-card-content">
+                                <p>No. VoxCMD processes all voice data locally on your device. Your voice recordings, commands, and any code or personal information are never sent to external servers. This ensures complete privacy for sensitive development work and personal commands.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Is telemetry enabled by default?</h4>
+                            <div class="doc-card-content">
+                                <p>Basic anonymous usage telemetry is enabled by default, but it only collects non-identifying information like feature usage statistics and error reports to help improve the product. No personal information, voice data, or command content is collected. You can disable telemetry completely during installation or any time in settings with "Hey VoxCMD, disable telemetry" or by editing the configuration file.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-question-circle"></i> Can VoxCMD access sensitive information?</h4>
+                            <div class="doc-card-content">
+                                <p>VoxCMD only accesses information you explicitly grant it permission to use. By default, it has access to:</p>
+                                <ul>
+                                    <li>Microphone for voice commands</li>
+                                    <li>File system access for project management</li>
+                                    <li>Application control for launching/managing programs</li>
+                                </ul>
+                                <p>Additional permissions (calendar access, email, etc.) are opt-in and can be managed in the permissions settings. All data is processed locally and never leaves your device unless you specifically configure cloud integrations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Community Section -->
+            <section id="community" class="doc-section">
+                <h2 class="doc-section-title">Community and Support</h2>
+                <div class="doc-content">
+                    <p>Join the VoxCMD community to get help, share ideas, and stay updated on the latest developments.</p>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Community Resources</h3>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fab fa-github"></i> GitHub Repository</h4>
+                            <div class="doc-card-content">
+                                <p>Our GitHub repository is the central hub for VoxCMD development. Here you can:</p>
+                                <ul>
+                                    <li>Report bugs and request features</li>
+                                    <li>Contribute to the codebase</li>
+                                    <li>Access development builds and beta features</li>
+                                    <li>View the project roadmap</li>
+                                </ul>
+                                <p><a href="#">Visit the VoxCMD GitHub Repository</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-comments"></i> Discord Community</h4>
+                            <div class="doc-card-content">
+                                <p>Join our Discord server to connect with other VoxCMD users and the development team. The Discord community offers:</p>
+                                <ul>
+                                    <li>Real-time help and troubleshooting</li>
+                                    <li>Command sharing and tips</li>
+                                    <li>Development updates and announcements</li>
+                                    <li>Showcase of cool projects using VoxCMD</li>
+                                </ul>
+                                <p><a href="#">Join the VoxCMD Discord Server</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="doc-card">
+                            <h4 class="doc-card-title"><i class="fas fa-globe"></i> Community Forum</h4>
+                            <div class="doc-card-content">
+                                <p>Our community forum is a great place for in-depth discussions, tutorials, and knowledge sharing. The forum includes:</p>
+                                <ul>
+                                    <li>Detailed tutorials and guides</li>
+                                    <li>Advanced configuration examples</li>
+                                    <li>Integration with other tools and services</li>
+                                    <li>Community plugin and extension sharing</li>
+                                </ul>
+                                <p><a href="#">Visit the VoxCMD Community Forum</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Getting Help</h3>
+                        <p>If you need assistance with VoxCMD, here are the best ways to get help:</p>
+                        
+                        <ol>
+                            <li><strong>In-App Help:</strong> Use "Hey VoxCMD, help me with [feature]" for built-in assistance</li>
+                            <li><strong>Documentation:</strong> This documentation covers most features and common issues</li>
+                            <li><strong>Discord Community:</strong> Ask questions in the #help channel for quick responses</li>
+                            <li><strong>GitHub Issues:</strong> Report bugs or request features on our GitHub repository</li>
+                            <li><strong>Email Support:</strong> For premium users, contact support@voxcmd.dev</li>
+                        </ol>
+                        
+                        <div class="tip">
+                            <p><strong>Tip:</strong> When asking for help, provide as much detail as possible about your issue, including your operating system, VoxCMD version, and any error messages you've received. This helps the community provide more accurate assistance.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">Contributing</h3>
+                        <p>VoxCMD is an open-source project, and we welcome contributions from the community. Here's how you can contribute:</p>
+                        
+                        <ul>
+                            <li><strong>Code Contributions:</strong> Submit pull requests on GitHub for bug fixes or new features</li>
+                            <li><strong>Documentation:</strong> Help improve or translate the documentation</li>
+                            <li><strong>Testing:</strong> Participate in beta testing new features and releases</li>
+                            <li><strong>Command Sharing:</strong> Share your custom commands and configurations with the community</li>
+                            <li><strong>Bug Reports:</strong> Report bugs and help verify fixes</li>
+                            <li><strong>Feature Requests:</strong> Suggest new features or improvements</li>
+                        </ul>
+                        
+                        <p>For more information on contributing, see our <a href="#">Contribution Guidelines</a> on GitHub.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">VoxCMD</a>
+                <p>Secure, offline voice automation for powerful system control.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Product</h4>
+                <a href="features.html">Features</a>
+                <a href="howitworks.html">How It Works</a>
+                <a href="documentation.html">Documentation</a>
+                <a href="pricing.html">Pricing</a>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Resources</h4>
+                <a href="#">Blog</a>
+                <a href="#">Community</a>
+                <a href="#">Changelog</a>
+                <a href="#">Roadmap</a>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Careers</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuBtn && navLinks) {
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuBtn.innerHTML = navLinks.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active link in sidebar
+                    document.querySelectorAll('.nav-links-list a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight sections when scrolled into view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Update active link in sidebar
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-links-list a').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all documentation sections
+        document.querySelectorAll('.doc-section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Observe steps for animation
+        document.querySelectorAll('.step').forEach(step => {
+            observer.observe(step);
+        });
+
+        // Search functionality
+        const searchBox = document.getElementById('docSearch');
+        
+        if (searchBox) {
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm.length < 2) {
+                    // Reset visibility if search term is too short
+                    document.querySelectorAll('.doc-section').forEach(section => {
+                        section.style.display = 'block';
+                    });
+                    return;
+                }
+                
+                // Search through section titles and content
+                document.querySelectorAll('.doc-section').forEach(section => {
+                    const sectionTitle = section.querySelector('.doc-section-title').textContent.toLowerCase();
+                    const sectionContent = section.querySelector('.doc-content').textContent.toLowerCase();
+                    
+                    if (sectionTitle.includes(searchTerm) || sectionContent.includes(searchTerm)) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

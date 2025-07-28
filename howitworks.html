@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="See how VoxCMD transforms a developer's daily workflow through voice automation">
+    <title>How It Works | VoxCMD</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* Base Styles from index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFFFFF;
+        }
+
+        .menu-btn { 
+            display: none; 
+            background: none; 
+            border: none; 
+            color: #e2e8f0; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            z-index: 101; 
+        }
+
+        /* Page Header */
+        .page-header {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 900px;
+            height: 900px;
+            background: radial-gradient(circle, rgba(76, 74, 255, 0.35) 0%, rgba(76, 74, 255, 0) 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            color: #FFFFFF;
+        }
+
+        .page-header p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            max-width: 700px;
+            color: #bdc3e0;
+        }
+
+        /* Visual Story Section */
+        .story-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5% 6rem;
+        }
+
+        .story-intro {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .story-intro h2 {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+
+        .story-intro p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: #bdc3e0;
+        }
+
+        /* Scene Cards */
+        .scenes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+        }
+
+        .scene {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            position: relative;
+        }
+
+        .scene-title {
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .scene-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(76, 74, 255, 0), rgba(76, 74, 255, 1), rgba(76, 74, 255, 0));
+        }
+
+        .scene-comparison {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .workspace {
+            flex: 1;
+            min-width: 300px;
+            max-width: 650px;
+            aspect-ratio: 16/9;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .workspace-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .workspace:hover .workspace-bg {
+            transform: scale(1.05);
+        }
+
+        .workspace-before .workspace-bg {
+            background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1050&q=80');
+            filter: saturate(0.7) contrast(0.9);
+        }
+
+        .workspace-after .workspace-bg {
+            background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1050&q=80');
+            filter: saturate(1.2) contrast(1.1);
+        }
+
+        .workspace-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            transition: background 0.3s ease;
+        }
+
+        .workspace-before .workspace-overlay {
+            background: linear-gradient(to bottom, rgba(255,74,74,0.1), rgba(255,74,74,0.6));
+        }
+
+        .workspace-after .workspace-overlay {
+            background: linear-gradient(to bottom, rgba(76,74,255,0.1), rgba(76,74,255,0.6));
+        }
+
+        .workspace-title {
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .workspace-desc {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            max-width: 90%;
+        }
+
+        .workspace-before .workspace-title i {
+            color: #ff4a4a;
+        }
+
+        .workspace-after .workspace-title i {
+            color: #4c4aff;
+        }
+
+        /* Visual elements for workspaces */
+        .workspace-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .app-icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .app-icon i {
+            color: #333;
+        }
+
+        .workspace-before:hover .app-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .workspace-after .voice-command {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background-color: rgba(76, 74, 255, 0.9);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .workspace-after:hover .voice-command {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .voice-command i {
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .auto-apps {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .auto-app {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .auto-app i {
+            color: #333;
+        }
+
+        .workspace-after:hover .auto-app {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .workspace-after .auto-app:nth-child(1) { transition-delay: 0.1s; }
+        .workspace-after .auto-app:nth-child(2) { transition-delay: 0.2s; }
+        .workspace-after .auto-app:nth-child(3) { transition-delay: 0.3s; }
+        .workspace-after .auto-app:nth-child(4) { transition-delay: 0.4s; }
+        .workspace-after .auto-app:nth-child(5) { transition-delay: 0.5s; }
+
+        /* Email icons - before */
+        .workspace-before .app-icon:nth-child(1) { top: 15%; left: 15%; transition-delay: 0.1s; }
+        .workspace-before .app-icon:nth-child(2) { top: 15%; left: 35%; transition-delay: 0.2s; }
+        .workspace-before .app-icon:nth-child(3) { top: 15%; left: 55%; transition-delay: 0.3s; }
+        .workspace-before .app-icon:nth-child(4) { top: 15%; left: 75%; transition-delay: 0.4s; }
+        .workspace-before .app-icon:nth-child(5) { top: 35%; left: 25%; transition-delay: 0.5s; }
+        .workspace-before .app-icon:nth-child(6) { top: 35%; left: 65%; transition-delay: 0.6s; }
+
+        /* Health metrics animation */
+        .health-impact {
+            padding: 6rem 5%;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15, 15, 15, 0) 0%, rgba(15, 15, 15, 0.8) 100%);
+        }
+
+        .health-impact h2 {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 2rem;
+        }
+
+        .health-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .health-metric {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            height: 300px;
+            padding: 2rem;
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .health-metric:hover {
+            transform: translateY(-10px);
+        }
+
+        .health-metric i {
+            font-size: 2.5rem;
+            color: #4c4aff;
+            margin-bottom: 1rem;
+        }
+
+        .health-metric h3 {
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+
+        .health-metric p {
+            color: #bdc3e0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .health-visual {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            overflow: hidden;
+        }
+
+        .health-visual-rsi {
+            background: url('https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGFuZHMlMjB0eXBpbmd8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .health-visual-eye {
+            background: url('https://images.unsplash.com/photo-1559548331-f9cb98001426?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZXllJTIwY2FyZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .health-visual-mental {
+            background: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVudGFsJTIwaGVhbHRofGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .health-visual-stress {
+            background: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVsYXh8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .health-metric:hover .health-visual {
+            opacity: 0.4;
+        }
+
+        /* Animated stat blocks */
+        .stat-block {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(76, 74, 255, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .health-metric:hover .stat-block {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(76, 74, 255, 0.2) 0%, rgba(76, 74, 255, 0) 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #bdc3e0;
+            font-size: 1.1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #4c4aff;
+            color: #FFFFFF;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: #3c3acf;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer { padding: 6rem 5%; background-color: #0c0c0c; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3rem; }
+        .footer-brand p { color: #94a3b8; }
+        .footer-links-group h4 { color: #FFFFFF; font-weight: 500; }
+        .footer-links-group a { color: #94a3b8; text-decoration: none; transition: color 0.3s; }
+        .footer-links-group a:hover { color: #FFFFFF; }
+        .footer-bottom { color: #64748b; text-align: center; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+        .footer-bottom a { color: #adaaff; text-decoration: none; }
+        .social-links { margin-top: 1rem; display: flex; gap: 0.75rem;}
+        .social-link { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; }
+        .social-link:hover { background-color: #FFFFFF; color: #050505; }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(5, 5, 5, 0.95); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; backdrop-filter: blur(10px); }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            .scene-comparison { flex-direction: column; align-items: center; }
+            .workspace { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="demo.html">Demo</a>
+            <a href="video.html">Video</a>
+            
+            <a href="documentation.html">Documentation</a>
+            <a href="contact.html">Contact</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="nav-cta">
+             <a href="#contact">Contact Us</a>
+        </div>
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>See VoxCMD In Action</h1>
+        <p>Experience how voice automation transforms a developer's daily workflow. Less typing, more creating.</p>
+    </section>
+
+    <!-- Visual Story Section -->
+    <section class="story-container">
+        <div class="story-intro" data-aos="fade-up">
+            <h2>A Visual Journey</h2>
+            <p>Compare the traditional developer experience with the VoxCMD-enhanced workflow. Hover over each scene to see the difference in action.</p>
+        </div>
+
+        <!-- Scenes Container -->
+        <div class="scenes-container">
+            <!-- Morning Routine Scene -->
+            <div class="scene" data-aos="fade-up">
+                <h3 class="scene-title">Morning Routine</h3>
+                <div class="scene-comparison">
+                    <!-- Before VoxCMD -->
+                    <div class="workspace workspace-before" data-aos="fade-right">
+                        <div class="workspace-bg"></div>
+                        <div class="workspace-elements">
+                            <!-- Manually opening apps one by one -->
+                            <div class="app-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="app-icon"><i class="fas fa-calendar"></i></div>
+                            <div class="app-icon"><i class="fas fa-code"></i></div>
+                            <div class="app-icon"><i class="fas fa-terminal"></i></div>
+                            <div class="app-icon"><i class="fab fa-slack"></i></div>
+                            <div class="app-icon"><i class="fas fa-chrome"></i></div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-times-circle"></i> Without VoxCMD</h4>
+                            <p class="workspace-desc">Manually opening multiple applications one-by-one, checking meetings and emails individually.</p>
+                        </div>
+                    </div>
+
+                    <!-- After VoxCMD -->
+                    <div class="workspace workspace-after" data-aos="fade-left">
+                        <div class="workspace-bg"></div>
+                        <div class="workspace-elements">
+                            <!-- Voice command visualization -->
+                            <div class="voice-command"><i class="fas fa-microphone-alt"></i> "Hey VoxCMD, start my workday"</div>
+                            
+                            <!-- Auto-launching apps -->
+                            <div class="auto-apps">
+                                <div class="auto-app"><i class="fas fa-envelope"></i></div>
+                                <div class="auto-app"><i class="fas fa-calendar"></i></div>
+                                <div class="auto-app"><i class="fas fa-code"></i></div>
+                                <div class="auto-app"><i class="fas fa-terminal"></i></div>
+                                <div class="auto-app"><i class="fab fa-slack"></i></div>
+                            </div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-check-circle"></i> With VoxCMD</h4>
+                            <p class="workspace-desc">One voice command launches all applications and provides a morning briefing with key information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Setup Scene -->
+            <div class="scene" data-aos="fade-up">
+                <h3 class="scene-title">Project Setup</h3>
+                <div class="scene-comparison">
+                    <!-- Before VoxCMD -->
+                    <div class="workspace workspace-before" data-aos="fade-right">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRlcm1pbmFsfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <!-- Visualize typing multiple commands -->
+                            <div class="app-icon" style="top: 20%; left: 20%;"><i class="fas fa-folder-plus"></i></div>
+                            <div class="app-icon" style="top: 20%; left: 50%;"><i class="fas fa-code-branch"></i></div>
+                            <div class="app-icon" style="top: 20%; left: 80%;"><i class="fas fa-download"></i></div>
+                            <div class="app-icon" style="top: 50%; left: 35%;"><i class="fas fa-cogs"></i></div>
+                            <div class="app-icon" style="top: 50%; left: 65%;"><i class="fas fa-file-code"></i></div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-times-circle"></i> Without VoxCMD</h4>
+                            <p class="workspace-desc">20+ minutes spent on manual setup: creating directories, initializing git, installing packages.</p>
+                        </div>
+                    </div>
+
+                    <!-- After VoxCMD -->
+                    <div class="workspace workspace-after" data-aos="fade-left">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRlcm1pbmFsfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <div class="voice-command" style="width: 80%;"><i class="fas fa-microphone-alt"></i> "VoxCMD, create a new React project with TypeScript and Tailwind"</div>
+                            
+                            <div class="auto-apps" style="top: 60%;">
+                                <div class="auto-app"><i class="fas fa-magic"></i></div>
+                            </div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-check-circle"></i> With VoxCMD</h4>
+                            <p class="workspace-desc">One voice command creates the entire project structure in under a minute - ready to start coding.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coding Session Scene -->
+            <div class="scene" data-aos="fade-up">
+                <h3 class="scene-title">Coding Session</h3>
+                <div class="scene-comparison">
+                    <!-- Before VoxCMD -->
+                    <div class="workspace workspace-before" data-aos="fade-right">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29kaW5nfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <div class="app-icon" style="top: 15%; left: 20%;"><i class="fas fa-search"></i></div>
+                            <div class="app-icon" style="top: 15%; left: 50%;"><i class="fas fa-book"></i></div>
+                            <div class="app-icon" style="top: 15%; left: 80%;"><i class="fas fa-bug"></i></div>
+                            <div class="app-icon" style="top: 45%; left: 35%;"><i class="fas fa-keyboard"></i></div>
+                            <div class="app-icon" style="top: 45%; left: 65%;"><i class="fas fa-mouse"></i></div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-times-circle"></i> Without VoxCMD</h4>
+                            <p class="workspace-desc">Constant context switching between keyboard, mouse, documentation, and debugging tools.</p>
+                        </div>
+                    </div>
+
+                    <!-- After VoxCMD -->
+                    <div class="workspace workspace-after" data-aos="fade-left">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29kaW5nfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <div class="voice-command"><i class="fas fa-microphone-alt"></i> "VoxCMD, find React useEffect docs"</div>
+                            
+                            <div class="auto-apps" style="top: 60%;">
+                                <div class="auto-app"><i class="fas fa-code"></i></div>
+                                <div class="auto-app"><i class="fas fa-glass-water"></i></div>
+                                <div class="auto-app"><i class="fas fa-chair"></i></div>
+                            </div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-check-circle"></i> With VoxCMD</h4>
+                            <p class="workspace-desc">Voice commands fetch documentation and debug help without breaking flow. Automatic health reminders.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End of Day Scene -->
+            <div class="scene" data-aos="fade-up">
+                <h3 class="scene-title">End of Day</h3>
+                <div class="scene-comparison">
+                    <!-- Before VoxCMD -->
+                    <div class="workspace workspace-before" data-aos="fade-right">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tcHV0ZXIlMjBuaWdodHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <div class="app-icon" style="top: 20%; left: 20%;"><i class="fas fa-tasks"></i></div>
+                            <div class="app-icon" style="top: 20%; left: 50%;"><i class="fas fa-envelope"></i></div>
+                            <div class="app-icon" style="top: 20%; left: 80%;"><i class="fas fa-power-off"></i></div>
+                            <div class="app-icon" style="top: 50%; left: 35%;"><i class="fas fa-file-alt"></i></div>
+                            <div class="app-icon" style="top: 50%; left: 65%;"><i class="fas fa-question"></i></div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-times-circle"></i> Without VoxCMD</h4>
+                            <p class="workspace-desc">Manually updating task trackers, sending status emails, and closing applications one by one.</p>
+                        </div>
+                    </div>
+
+                    <!-- After VoxCMD -->
+                    <div class="workspace workspace-after" data-aos="fade-left">
+                        <div class="workspace-bg" style="background-image: url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tcHV0ZXIlMjBuaWdodHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60');"></div>
+                        <div class="workspace-elements">
+                            <div class="voice-command"><i class="fas fa-microphone-alt"></i> "VoxCMD, end my workday"</div>
+                            
+                            <div class="auto-apps" style="top: 60%;">
+                                <div class="auto-app"><i class="fas fa-list-check"></i></div>
+                                <div class="auto-app"><i class="fas fa-floppy-disk"></i></div>
+                                <div class="auto-app"><i class="fas fa-calendar-day"></i></div>
+                            </div>
+                        </div>
+                        <div class="workspace-overlay">
+                            <h4 class="workspace-title"><i class="fas fa-check-circle"></i> With VoxCMD</h4>
+                            <p class="workspace-desc">One command generates progress summary, updates tasks, and sets up tomorrow's starting point.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Impact Section -->
+    <section class="health-impact">
+        <h2 data-aos="fade-up">Health & Well-being Benefits</h2>
+        <p data-aos="fade-up" data-aos-delay="100">See how VoxCMD impacts not just your productivity, but your physical and mental health.</p>
+
+        <div class="health-metrics">
+            <div class="health-metric" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>Reduced RSI Risk</h3>
+                <p>Less keyboard and mouse usage means significantly reduced risk of repetitive strain injuries.</p>
+                <div class="health-visual health-visual-rsi"></div>
+                <div class="stat-block">-40% Hand Strain</div>
+            </div>
+
+            <div class="health-metric" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-eye"></i>
+                <h3>Improved Eye Health</h3>
+                <p>Automated break reminders protect your vision and reduce eye fatigue.</p>
+                <div class="health-visual health-visual-eye"></div>
+                <div class="stat-block">+60% Eye Relief</div>
+            </div>
+
+            <div class="health-metric" data-aos="zoom-in" data-aos-delay="300">
+                <i class="fas fa-brain"></i>
+                <h3>Mental Clarity</h3>
+                <p>Reduced cognitive load means more mental energy for creative problem-solving.</p>
+                <div class="health-visual health-visual-mental"></div>
+                <div class="stat-block">+45% Focus</div>
+            </div>
+
+            <div class="health-metric" data-aos="zoom-in" data-aos-delay="400">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Stress Reduction</h3>
+                <p>Smoother workflows and fewer frustrations lead to measurably lower stress levels.</p>
+                <div class="health-visual health-visual-stress"></div>
+                <div class="stat-block">-35% Stress</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2 data-aos="fade-up">Transform Your Development Experience</h2>
+        <p data-aos="fade-up" data-aos-delay="100">Join the growing community of developers who have reclaimed their time, improved their health, and boosted productivity with VoxCMD.</p>
+        <a href="#" class="cta-button" data-aos="fade-up" data-aos-delay="200">Get Started with VoxCMD</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">VoxCMD</a>
+                <p>Secure, offline voice automation for powerful system control.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false,
+            offset: 100
+        });
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+    </script>
+</body>
+</html>

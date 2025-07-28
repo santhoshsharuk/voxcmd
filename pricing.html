@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VoxCMD is an open-source voice command system with customization services available">
+    <title>Pricing | VoxCMD</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f1f5f9;
+            line-height: 1.6;
+            background-image: url('https://uploads-ssl.webflow.com/64b055180413346b393b33b0/64b055180413346b393b3424_bg-noise-black.png');
+            background-size: cover;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFFFFF;
+        }
+
+        .menu-btn { 
+            display: none; 
+            background: none; 
+            border: none; 
+            color: #e2e8f0; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            z-index: 101; 
+        }
+
+        /* Page Header */
+        .page-header {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 900px;
+            height: 900px;
+            background: radial-gradient(circle, rgba(76, 74, 255, 0.35) 0%, rgba(76, 74, 255, 0) 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            color: #FFFFFF;
+        }
+
+        .page-header p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            max-width: 700px;
+            color: #bdc3e0;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5% 6rem;
+        }
+
+        /* Open Source Banner */
+        .open-source-banner {
+            background: linear-gradient(90deg, rgba(76, 74, 255, 0.2) 0%, rgba(76, 74, 255, 0.1) 100%);
+            border: 1px solid rgba(76, 74, 255, 0.3);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 0 0 4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .banner-content {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .banner-title {
+            font-size: 2.2rem;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+        }
+
+        .banner-subtitle {
+            font-size: 1.2rem;
+            color: #adaaff;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .banner-text {
+            color: #bdc3e0;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .banner-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .banner-features li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem;
+            position: relative;
+            color: #bdc3e0;
+        }
+
+        .banner-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #50fa7b;
+            font-weight: bold;
+        }
+
+        .banner-cta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .banner-button {
+            padding: 0.9rem 1.8rem;
+            background-color: rgba(76, 74, 255, 0.8);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .banner-button:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.3);
+        }
+
+        .banner-button.outline {
+            background-color: transparent;
+            border: 1px solid rgba(76, 74, 255, 0.5);
+        }
+
+        .banner-button.outline:hover {
+            background-color: rgba(76, 74, 255, 0.1);
+        }
+
+        .banner-image {
+            flex: 0 0 350px;
+            max-width: 350px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Two Column Layout */
+        .pricing-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .pricing-column {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .pricing-card {
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(76, 74, 255, 0.3);
+        }
+
+        .pricing-card-title {
+            font-size: 1.8rem;
+            color: #FFFFFF;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .pricing-card-title i {
+            font-size: 1.5rem;
+            color: #adaaff;
+        }
+
+        .pricing-card-price {
+            font-size: 2.5rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card-subtitle {
+            color: #adaaff;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .pricing-card-description {
+            color: #bdc3e0;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-card-features li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem;
+            position: relative;
+            color: #bdc3e0;
+        }
+
+        .pricing-card-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #50fa7b;
+            font-weight: bold;
+        }
+
+        .pricing-card-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .pricing-card-button {
+            display: inline-block;
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background-color: rgba(76, 74, 255, 0.8);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .pricing-card-button:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.3);
+        }
+
+        .pricing-card-button.outline {
+            background-color: transparent;
+            border: 1px solid rgba(76, 74, 255, 0.5);
+        }
+
+        .pricing-card-button.outline:hover {
+            background-color: rgba(76, 74, 255, 0.1);
+        }
+
+        .pricing-card-button.contact {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .pricing-card-button.contact:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Solutions */
+        .custom-solutions {
+            margin-top: 5rem;
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+        }
+
+        .custom-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .custom-description {
+            color: #bdc3e0;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .custom-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .custom-feature {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .custom-feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(76, 74, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background-color: rgba(76, 74, 255, 0.1);
+            color: #adaaff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: #FFFFFF;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+
+        .feature-description {
+            color: #bdc3e0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .custom-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .custom-button {
+            padding: 0.9rem 2rem;
+            background-color: rgba(76, 74, 255, 0.8);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-button:hover {
+            background-color: rgba(76, 74, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76, 74, 255, 0.3);
+        }
+
+        .custom-button.outline {
+            background-color: transparent;
+            border: 1px solid rgba(76, 74, 255, 0.5);
+        }
+
+        .custom-button.outline:hover {
+            background-color: rgba(76, 74, 255, 0.1);
+        }
+
+        /* Contributors Section */
+        .contributors {
+            margin-top: 5rem;
+            text-align: center;
+        }
+
+        .contributors-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+        }
+
+        .contributors-description {
+            color: #bdc3e0;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        .contributors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+        .contributor {
+            text-decoration: none;
+        }
+
+        .contributor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(76, 74, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .contributor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contributor:hover .contributor-avatar {
+            transform: translateY(-5px);
+            border-color: rgba(76, 74, 255, 0.8);
+            box-shadow: 0 5px 15px rgba(76, 74, 255, 0.3);
+        }
+
+        .contributors-cta {
+            margin-top: 2rem;
+        }
+
+        .contributors-button {
+            padding: 0.8rem 1.8rem;
+            background-color: transparent;
+            border: 1px solid rgba(76, 74, 255, 0.5);
+            color: #adaaff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contributors-button:hover {
+            background-color: rgba(76, 74, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-top: 5rem;
+        }
+
+        .faq-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.5) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.2rem 1.5rem;
+            color: #FFFFFF;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faq-question:hover {
+            background-color: rgba(76, 74, 255, 0.1);
+        }
+
+        .faq-question i {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #bdc3e0;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 300px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 992px) {
+            .pricing-columns {
+                flex-direction: column;
+            }
+            
+            .banner-image {
+                flex: 0 0 250px;
+                max-width: 250px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem 5%; }
+            .nav-links { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(5, 5, 5, 0.95); flex-direction: column; justify-content: center; align-items: center; gap: 2rem; backdrop-filter: blur(10px); }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            
+            .page-header {
+                padding-top: 8rem;
+                min-height: 30vh;
+            }
+            
+            .open-source-banner {
+                text-align: center;
+                padding: 2rem;
+            }
+            
+            .banner-cta {
+                justify-content: center;
+            }
+            
+            .custom-solutions {
+                padding: 2rem;
+            }
+            
+            .contributors-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+            
+            .contributor-avatar {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        /* Footer */
+        .footer { padding: 6rem 5%; background-color: #0c0c0c; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3rem; }
+        .footer-brand p { color: #94a3b8; }
+        .footer-links-group h4 { color: #FFFFFF; font-weight: 500; }
+        .footer-links-group a { color: #94a3b8; text-decoration: none; transition: color 0.3s; }
+        .footer-links-group a:hover { color: #FFFFFF; }
+        .footer-bottom { color: #64748b; text-align: center; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+        .footer-bottom a { color: #adaaff; text-decoration: none; }
+        .social-links { margin-top: 1rem; display: flex; gap: 0.75rem;}
+        .social-link { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; }
+        .social-link:hover { background-color: #FFFFFF; color: #050505; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">VoxCMD.</div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="demo.html">Demo</a>
+            <a href="video.html">Video</a>
+            <a href="howitworks.html">How It Works</a>
+            <a href="documentation.html">Documentation</a>
+            <a href="contact.html">Contact</a>
+            
+        </div>
+        
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>VoxCMD is Open Source</h1>
+        <p>Our core voice command system is completely free and open source. We offer custom development services for specific needs.</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Open Source Banner -->
+        <div class="open-source-banner">
+            <div class="banner-content">
+                <h2 class="banner-title">100% Free & Open Source</h2>
+                <h3 class="banner-subtitle">MIT Licensed</h3>
+                <p class="banner-text">VoxCMD is an open-source project that puts the power of voice automation in everyone's hands. Our core system is completely free to use, modify, and distribute under the MIT license.</p>
+                
+                <ul class="banner-features">
+                    <li>Complete offline voice recognition system</li>
+                    <li>Extensive command library for development & productivity</li>
+                    <li>Integration with popular development tools</li>
+                    <li>Cross-platform support (Windows, macOS, Linux)</li>
+                    <li>Regular community-driven updates</li>
+                </ul>
+                
+                <div class="banner-cta">
+                    <a href="#" class="banner-button">
+                        <i class="fab fa-github"></i> Star on GitHub
+                    </a>
+                    <a href="documentation.html" class="banner-button outline">
+                        <i class="fas fa-book"></i> Read the Docs
+                    </a>
+                </div>
+            </div>
+            <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/terminal/terminal.png" alt="Open Source Terminal" class="banner-image">
+        </div>
+        
+        <!-- Two Column Pricing Layout -->
+        <div class="pricing-columns">
+            <!-- Open Source Column -->
+            <div class="pricing-column">
+                <div class="pricing-card">
+                    <h3 class="pricing-card-title"><i class="fab fa-github"></i> Community Edition</h3>
+                    <div class="pricing-card-price">$0</div>
+                    <div class="pricing-card-subtitle">Free Forever</div>
+                    
+                    <p class="pricing-card-description">Everything you need to control your development environment with voice commands, supported by our community.</p>
+                    
+                    <ul class="pricing-card-features">
+                        <li>Full offline voice recognition</li>
+                        <li>Development command library</li>
+                        <li>System automation capabilities</li>
+                        <li>Basic IDE integrations</li>
+                        <li>Community support</li>
+                        <li>Regular open-source updates</li>
+                    </ul>
+                    
+                    <div class="pricing-card-cta">
+                        <a href="#" class="pricing-card-button outline">
+                            <i class="fab fa-github"></i> Get Started on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Custom Services Column -->
+            <div class="pricing-column">
+                <div class="pricing-card">
+                    <h3 class="pricing-card-title"><i class="fas fa-cogs"></i> Custom Development</h3>
+                    <div class="pricing-card-price">Custom</div>
+                    <div class="pricing-card-subtitle">Contact for Pricing</div>
+                    
+                    <p class="pricing-card-description">Need VoxCMD tailored to your specific requirements? Our team offers custom development services to extend and adapt the platform.</p>
+                    
+                    <ul class="pricing-card-features">
+                        <li>Specialized command development</li>
+                        <li>Custom integrations with your tools</li>
+                        <li>Enterprise deployment assistance</li>
+                        <li>Advanced security configurations</li>
+                        <li>Branded & white-label options</li>
+                        <li>Dedicated support packages</li>
+                    </ul>
+                    
+                    <div class="pricing-card-cta">
+                        <a href="contact.html" class="pricing-card-button">
+                            <i class="fas fa-paper-plane"></i> Contact for Pricing
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Custom Solutions Section -->
+        <div class="custom-solutions">
+            <h2 class="custom-title">Customization Services</h2>
+            <p class="custom-description">While VoxCMD is completely free to use, we offer professional services to help you get the most out of the platform for your specific needs.</p>
+            
+            <div class="custom-features">
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="feature-title">Custom Integrations</h3>
+                    <p class="feature-description">We can integrate VoxCMD with your proprietary tools and internal systems for a seamless workflow.</p>
+                </div>
+                
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-microphone-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Specialized Commands</h3>
+                    <p class="feature-description">Custom command sets designed specifically for your industry, team, or unique requirements.</p>
+                </div>
+                
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Enterprise Security</h3>
+                    <p class="feature-description">Enhanced security configurations for organizations with strict compliance requirements.</p>
+                </div>
+                
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="feature-title">Training & Onboarding</h3>
+                    <p class="feature-description">Comprehensive training programs to help your team get the most from VoxCMD.</p>
+                </div>
+                
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3 class="feature-title">White Labeling</h3>
+                    <p class="feature-description">Rebrand VoxCMD with your company's look and feel for internal or client use.</p>
+                </div>
+                
+                <div class="custom-feature">
+                    <div class="feature-icon-large">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="feature-title">Priority Support</h3>
+                    <p class="feature-description">Dedicated support channels with guaranteed response times for critical issues.</p>
+                </div>
+            </div>
+            
+            <div class="custom-cta">
+                <a href="contact.html" class="custom-button">
+                    <i class="fas fa-paper-plane"></i> Request a Consultation
+                </a>
+                <a href="documentation.html#customization" class="custom-button outline">
+                    <i class="fas fa-book"></i> Customization Documentation
+                </a>
+            </div>
+        </div>
+        
+        <!-- Contributors Section -->
+        <div class="contributors">
+            <h2 class="contributors-title">Join Our Community</h2>
+            <p class="contributors-description">VoxCMD is made possible by the contributions of developers around the world. Join us in building the future of voice automation.</p>
+            
+            <div class="contributors-grid">
+                <!-- Sample contributors - these would be dynamically generated in a real implementation -->
+                <a href="#" class="contributor" title="Sarah Chen">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah Chen">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Michael Johnson">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Michael Johnson">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Ava Williams">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Ava Williams">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="James Brown">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="James Brown">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Elena Rodriguez">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/47.jpg" alt="Elena Rodriguez">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="David Kim">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="David Kim">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Olivia Taylor">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/17.jpg" alt="Olivia Taylor">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Robert Garcia">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/91.jpg" alt="Robert Garcia">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Sophia Martinez">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Sophia Martinez">
+                    </div>
+                </a>
+                <a href="#" class="contributor" title="Thomas Wilson">
+                    <div class="contributor-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Thomas Wilson">
+                    </div>
+                </a>
+                <!-- More contributors would be listed here -->
+            </div>
+            
+            <div class="contributors-cta">
+                <a href="#" class="contributors-button">
+                    <i class="fab fa-github"></i> Become a Contributor
+                </a>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Is VoxCMD really 100% free?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, the core VoxCMD system is completely free and open source under the MIT license. You can use it for personal or commercial projects without any cost. We only charge for custom development work, specialized integrations, and priority support services if you need them, but these are entirely optional.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What's included in the open source version?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The open source version includes everything you need for a fully functional voice command system: offline voice recognition, an extensive library of development and system commands, IDE integrations, and cross-platform support. It's a complete solution that works right out of the box for most developers' needs.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        When would I need custom development services?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You might consider our custom development services if you have specific requirements such as: integration with proprietary software, industry-specific command sets, enterprise deployment across large organizations, compliance with specific security requirements, or if you need white-labeled versions of VoxCMD for your clients or products.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How much do customization services cost?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Customization costs vary depending on the scope and complexity of your requirements. We provide personalized quotes after an initial consultation to understand your specific needs. Our pricing is transparent and project-based, so you'll know exactly what you're paying for. For a general estimate, please contact our team with details about your project.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Can I modify VoxCMD myself instead of hiring you?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! As an open source project, you're free to modify VoxCMD in any way you see fit. Our documentation includes guides for extending and customizing the system. Our custom development services are simply an option for organizations that prefer to have expert assistance or lack the internal resources to implement complex modifications.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Do you offer support for the open source version?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The open source version is supported by our active community through GitHub issues and our Discord channel. Many questions and issues can be resolved quickly through these channels. For guaranteed response times or dedicated support, we offer premium support packages as part of our custom services.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">VoxCMD</a>
+                <p>Secure, offline voice automation for powerful system control.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Product</h4>
+                <a href="features.html">Features</a>
+                <a href="howitworks.html">How It Works</a>
+                <a href="documentation.html">Documentation</a>
+                <a href="pricing.html">Pricing</a>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Resources</h4>
+                <a href="#">Blog</a>
+                <a href="#">Community</a>
+                <a href="#">Changelog</a>
+                <a href="#">Roadmap</a>
+            </div>
+            
+            <div class="footer-links-group">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Careers</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VoxCMD. All rights reserved. Created by <a href="#">santhoshsharuk</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuBtn && navLinks) {
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuBtn.innerHTML = navLinks.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+        }
+
+        // FAQ toggles
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Animate elements when scrolled into view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements with animation
+        document.querySelectorAll('.pricing-card, .custom-feature, .faq-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            observer.observe(el);
+        });
+        
+        // Add visible class when observed
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.pricing-card, .custom-feature, .faq-item').forEach(el => {
+                    if (el.getBoundingClientRect().top < window.innerHeight) {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }
+                });
+            }, 300);
+        });
+    </script>
+</body>
+</html>
